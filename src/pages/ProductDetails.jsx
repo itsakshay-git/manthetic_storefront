@@ -18,8 +18,7 @@ const ProductDetails = () => {
   const [selectedImage, setSelectedImage] = useState("");
   const [quantity, setQuantity] = useState(1);
 
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzUzMjA1Nzc0LCJleHAiOjE3NTU3OTc3NzR9.1bOh8Dnuf334mRbxmwVGkpI2BQC5YO1BTFxkFdLwqX0";
+  const token =localStorage.getItem("manthetic_token");
 
   useEffect(() => {
     if (data?.images?.length) {

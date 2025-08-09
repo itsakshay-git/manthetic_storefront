@@ -21,33 +21,28 @@ export const fetchCart = async (token) => {
 export default function useCart(token) {
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
-  const hasSetCart = useRef(false);
 
 
-  const query  = useQuery({
-    queryKey: ["cart"],
-    queryFn: () => fetchCart(token),
-    onSuccess: (data) => {
-      try {
-        dispatch(setCart(data));
-      } catch (e) {
-        console.error("Error inside onSuccess:", e);
-      }
-    },
-      onError: (err) => {
-      console.error("onError called:", err);
-    }
-  });
+const query = useQuery({
+  queryKey: ["cart", token],
+  queryFn: async () => {
+    const res = await axios.get("/cart", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    dispatch(setCart(res.data));
+    return res.data;
+  },
+  enabled: !!token,
+  onSuccess: (data) => {
+    console.log("✅ onSuccess fired with:", data);
+  },
+  onError: (err) => {
+    console.error("❌ onError fired:", err);
+  }
+});
 
 
 const { data: cart = [], isLoading } = query;
-
-    useEffect(() => {
-      if (query.isSuccess && !hasSetCart.current) {
-        dispatch(setCart(query.data));
-        hasSetCart.current = true;
-      }
-    }, [query.isSuccess, query.data, dispatch]);
 
 
   const updateQuantityMutation = useMutation({
@@ -73,31 +68,37 @@ const { data: cart = [], isLoading } = query;
     }
   });
 
-  const removeItemMutation = useMutation({
-    mutationFn: (id) =>
-      axios.delete(`http://localhost:5000/api/cart/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      }),
-    onMutate: async (id) => {
-      await queryClient.cancelQueries(["cart"]);
-      const prevCart = queryClient.getQueryData(["cart"]);
-      queryClient.setQueryData(["cart"], (old) =>
-        old.filter((item) => item.id !== id)
-      );
-      return { prevCart };
-    },
-    onError: (_err, _vars, context) => {
-      queryClient.setQueryData(["cart"], context.prevCart);
-    },
-    onSuccess: () => {
-      console.log("onSuccess fired");
-      toast.success("Item removed from cart");
-    },
-    onSettled: () => {
-      console.log("onSettled");
-      queryClient.invalidateQueries(["cart"]);
-    }
-  });
+const removeItemMutation = useMutation({
+  mutationFn: (id) => {
+    console.log("🚀 removeItemMutation running for id:", id);
+    return axios.delete(`http://localhost:5000/api/cart/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  },
+  onMutate: async (id) => {
+    await queryClient.cancelQueries(["cart", token]); // use same key with token
+    const prevCart = queryClient.getQueryData(["cart", token]) || [];
+    const newCart = prevCart.filter((item) => item.id !== id);
+
+    queryClient.setQueryData(["cart", token], newCart);
+    dispatch(setCart(newCart));
+
+    return { prevCart };
+  },
+  onError: (err, _vars, context) => {
+    console.error("❌ Remove error:", err.response?.data || err.message);
+    queryClient.setQueryData(["cart", token], context.prevCart);
+    dispatch(setCart(context.prevCart));
+  },
+  onSuccess: () => {
+    console.log("✅ onSuccess fired");
+    toast.success("Item removed from cart");
+  },
+  onSettled: () => {
+    console.log("🔄 onSettled fired");
+    queryClient.invalidateQueries(["cart", token]);
+  }
+});
 
   return {
     cart,
