@@ -9,13 +9,13 @@ import Navbar from "@/components/layout/Navbar";
 const HomePage = () => {
   return (
     <main className="font-sans">
-      <Navbar />
+      {/* <Navbar /> */}
       <HeroSection />
       <CategoryList />
       <TopSellingProducts />
       <DealBanner />
       <Testimonials />
-      <Footer />
+      {/* <Footer /> */}
     </main>
   );
 };
