@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Search, User, ShoppingBag } from "lucide-react";
+import { Search, User, ShoppingBag, Heart } from "lucide-react"; // ⬅ Added Heart
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useCart from "@/hooks/useCart";
@@ -50,8 +50,12 @@ const Navbar = () => {
           <Link to={"/"}>Manthetic</Link>
         </h1>
         <nav className="hidden md:flex gap-8 text-sm font-medium text-gray-700">
-          <Link to={"/products"} className="hover:text-black">Shop</Link>
-          <a href="#" className="hover:text-black">About</a>
+          <Link to={"/products"} className="hover:text-black">
+            Shop
+          </Link>
+          <a href="#" className="hover:text-black">
+            About
+          </a>
         </nav>
       </div>
 
@@ -70,6 +74,11 @@ const Navbar = () => {
           />
         </div>
 
+        {/* Wishlist */}
+        <Link to="/wishlist" className="relative">
+          <Heart className="w-5 h-5 text-black cursor-pointer" />
+        </Link>
+
         {/* User Icon */}
         <div className="relative">
           <User
@@ -78,12 +87,12 @@ const Navbar = () => {
           />
           {showMenu && user && (
             <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg overflow-hidden">
-              <button
+              <Link
+                to={"/setting"}
                 className="block px-4 py-2 text-sm hover:bg-gray-100 w-full text-left"
-                onClick={() => navigate("/settings")}
               >
                 Settings
-              </button>
+              </Link>
               <button
                 className="block px-4 py-2 text-sm hover:bg-gray-100 w-full text-left"
                 onClick={handleLogout}

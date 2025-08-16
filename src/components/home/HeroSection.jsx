@@ -2,8 +2,10 @@ import hero1 from "@/assets/images/hero1.jpg";
 import hero2 from "@/assets/images/hero2.jpg";
 import hero3 from "@/assets/images/hero3.jpg";
 import hero4 from "@/assets/images/hero4.jpg";
+import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
+  const navigate = useNavigate();
   return (
     <section className="w-full px-4 py-8 md:px-32 md:py-12">
       <div className="flex flex-col md:flex-row gap-6 items-start relative">
@@ -14,7 +16,7 @@ const HeroSection = () => {
                     <span className="text-gray-800" style={{fontFamily: "Architects Daughter" , fontWeight: "lighter"}}>Fashion</span> <br />
                     <span className="text-black">Potential</span>
                 </h1>
-                <button className="bg-green-500 text-white text-sm px-4 py-2 rounded-full mt-5">
+                <button onClick={() => navigate(`/products`)} className="bg-green-500 text-white text-sm px-4 py-2 rounded-full mt-5 cursor-pointer hover:bg-black">
                     Shop Now
                 </button>
             </div>
@@ -45,7 +47,7 @@ const HeroSection = () => {
               alt="featured"
               className="w-full object-cover rounded-2xl"
             />
-            <button className="absolute left-4 bottom-4 text-white border border-white rounded-full p-2 px-4 cursor-pointer">Best Seller</button>
+            <button onClick={() => navigate(`/products?is_best_selling=true`)} className="absolute left-4 bottom-4 text-white border border-white rounded-full p-2 px-4 cursor-pointer">Best Seller</button>
             </div>
             <div className="px-0 py-4">
               <h3 className="font-semibold text-lg text-gray-800">

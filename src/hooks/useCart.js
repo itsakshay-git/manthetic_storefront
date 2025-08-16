@@ -45,33 +45,42 @@ const query = useQuery({
 const { data: cart = [], isLoading } = query;
 
 
-  const updateQuantityMutation = useMutation({
-    mutationFn: ({ id, quantity }) =>
-      axios.put(
-        `http://localhost:5000/api/cart/${id}`,
-        { quantity },
-        { headers: { Authorization: `Bearer ${token}` } }
-      ),
+const updateQuantityMutation = useMutation({
+  mutationFn: ({ id, quantity }) =>
+    axios.put(
+      `/cart/${id}`,
+      { quantity },
+      { headers: { Authorization: `Bearer ${token}` } }
+    ),
     onMutate: async ({ id, quantity }) => {
-      await queryClient.cancelQueries(["cart"]);
-      const prevCart = queryClient.getQueryData(["cart"]);
-      queryClient.setQueryData(["cart"], (old) =>
-        old.map((item) => item.id === id ? { ...item, quantity } : item)
-      );
-      return { prevCart };
-    },
-    onError: (_err, _vars, context) => {
-      queryClient.setQueryData(["cart"], context.prevCart);
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries(["cart"]);
+      await queryClient.cancelQueries({ queryKey: ["cart", token] });
+      
+      const prevCart = queryClient.getQueryData(["cart", token]) || [];
+      const nextCart = prevCart.map((item) =>
+        item.id === id ? { ...item, quantity } : item
+    );
+    
+    queryClient.setQueryData(["cart", token], nextCart);
+    dispatch(setCart(nextCart));
+    console.log("Updating cart item:", id, "to", quantity);
+    return { prevCart };
+  },
+  onError: (_err, _vars, ctx) => {
+    if (ctx?.prevCart) {
+      queryClient.setQueryData(["cart", token], ctx.prevCart);
+      dispatch(setCart(ctx.prevCart));
     }
-  });
+    toast.error("Failed to update quantity");
+  },
+  onSettled: () => {
+    queryClient.invalidateQueries({ queryKey: ["cart", token] });
+  },
+});
 
 const removeItemMutation = useMutation({
   mutationFn: (id) => {
     console.log("🚀 removeItemMutation running for id:", id);
-    return axios.delete(`http://localhost:5000/api/cart/${id}`, {
+    return axios.delete(`/cart/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
   },
@@ -100,10 +109,43 @@ const removeItemMutation = useMutation({
   }
 });
 
+
+const addToCartMutation = useMutation({
+  mutationFn: async ({ variant, token }) => {
+    const defaultSize = variant.size_options?.[0];
+    if (!defaultSize) throw new Error("No size available for this product.");
+
+    return axios.post(
+      "/cart",
+      {
+        variant_id: variant.id,
+        quantity: 1,
+        selected_size: defaultSize.size,
+        selected_price: defaultSize.price || 0,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  },
+  onSuccess: () => {
+    toast.success("Added to cart successfully");
+    queryClient.invalidateQueries(["cart", token]);
+  },
+  onError: (err) => {
+    toast.error(err?.response?.data?.message || "Failed to add to cart");
+  },
+});
+
+
   return {
     cart,
     loading: isLoading,
     updateQuantity: (id, quantity) => updateQuantityMutation.mutate({ id, quantity }),
-    removeItem: (id) => removeItemMutation.mutate(id)
+    removeItem: (id) => removeItemMutation.mutate(id),
+    addToCart: (variant) => addToCartMutation.mutate({ variant, token }),
   };
 }

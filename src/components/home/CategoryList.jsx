@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const CategoryList = () => {
   const { data: categories, isLoading, isError } = useCategories();
-   const navigate = useNavigate();
+  const navigate = useNavigate();
 
   if (isLoading) return <p className="px-4">Loading...</p>;
   if (isError) return <p className="px-4 text-red-500">Failed to load categories</p>;

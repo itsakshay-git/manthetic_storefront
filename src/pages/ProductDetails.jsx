@@ -49,12 +49,6 @@ const ProductDetails = () => {
 
 const handleAddToCart = async () => {
   if (!token) return toast.error("You must be logged in to add to cart.");
-  console.log(      {
-        variant_id: variant.id,
-        quantity,
-        selected_size: selectedSize,
-        selected_price: currentSize?.price || 0
-      },)
 
   try {
     const response = await axios.post(

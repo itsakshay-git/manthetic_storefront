@@ -1,6 +1,7 @@
 import { Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import useTopSellingProducts from "@/hooks/useTopSellingProducts";
+import ProductCard from "../Products/ProductCard";
 
 const TopSellingProducts = () => {
   const navigate = useNavigate();
@@ -25,35 +26,9 @@ const TopSellingProducts = () => {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-        {products.map(product => {
-          const bestVariant = product.variants.find(v => v.is_best_selling);
-          return (
-            <div
-              key={product.id}
-              className="bg-white rounded-xl overflow-hidden hover:shadow-lg transition"
-            >
-              <img
-                src={bestVariant?.images?.[0] || product.imageurl}
-                alt={product.title}
-                className="w-full h-80 object-cover rounded-xl"
-              />
-              <div className="p-4">
-                <h4 className="text-sm font-medium text-gray-800 truncate">
-                  {product.title}
-                </h4>
-                <div className="flex items-center justify-between mt-2">
-                  <span className="text-green-600 font-semibold">
-                    ₹{bestVariant?.price || "N/A"}
-                  </span>
-                  <span className="flex items-center text-sm text-yellow-500">
-                    <Star size={14} className="fill-yellow-500 mr-1" />
-                    {bestVariant?.average_rating || "N/A"}
-                  </span>
-                </div>
-              </div>
-            </div>
-          );
-        })}
+        {products.slice(0, 8).map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
       </div>
     </section>
   );

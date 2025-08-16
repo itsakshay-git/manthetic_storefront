@@ -34,8 +34,35 @@ export const useAuth = () => {
     },
   });
 
+    // REGISTER
+  const registerMutation = useMutation({
+    mutationFn: async (payload) => {
+      const res = await axios.post("/auth/register", payload);
+      return res.data;
+    },
+    onSuccess: (data) => {
+      const { token, user } = data;
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      dispatch(setCredentials({ token, user }));
+      localStorage.setItem("manthetic_token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+      toast.success("Account created successfully 🎉");
+      navigate("/login");
+    },
+    onError: (err) => {
+      const message =
+        err?.response?.data?.msg ||
+        err?.response?.data ||
+        err.message ||
+        "Registration failed";
+      toast.error(message);
+    },
+  });
+
   return {
     login: (credentials) => mutation.mutate(credentials),
+    register: (credentials) => registerMutation.mutate(credentials),
     ...mutation,
+    registerMutation,
   };
 };

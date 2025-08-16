@@ -10,7 +10,8 @@ export default function Products() {
   const [filters, setFilters] = useState({
   search: "",
   category: "",
-  stock: "", // "in", "out", or ""
+  in_stock: false,     // boolean
+  out_of_stock: false, // boolean
   is_best_selling: false,
   size: "", // "S", "M", "L", "XL", etc.
 });
@@ -32,8 +33,6 @@ const {
 const selectedCategory = filters.category
   ? categories.find((cat) => String(cat.id) === String(filters.category))?.name
   : null;
-
-  console.log(selectedCategory)
 
 
     // Extract search term from URL query
@@ -58,20 +57,24 @@ const selectedCategory = filters.category
 
       <div className="flex gap-6 items-start">
         <Filter
-          onApply={(newFilters) => {
-            console.log(newFilters)
-            setFilters(newFilters);
-            setPage(1); // reset page on filter
-          }}
+            onApply={(newFilters) => {
+              setFilters({
+                ...newFilters,
+                in_stock: newFilters.stock === "in",
+                out_of_stock: newFilters.stock === "out",
+              });
+              setPage(1);
+            }}
             onReset={() => {
-            setFilters({
+              setFilters({
                 search: "",
                 category: "",
-                stock: "",
+                in_stock: false,
+                out_of_stock: false,
                 is_best_selling: false,
                 size: "",
-            });
-            setPage(1);
+              });
+              setPage(1);
             }}
         />
 

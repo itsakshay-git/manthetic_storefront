@@ -138,10 +138,10 @@ const handlePlaceOrder = () => {
 
         <button
         onClick={handlePlaceOrder}
-        disabled={placeOrderMutation.isLoading}
+        disabled={placeOrderMutation.isPending}
         className="bg-black text-white px-4 py-2 rounded-full w-full hover:bg-green-600 cursor-pointer"
         >
-        {placeOrderMutation.isLoading ? "Placing Order..." : "Place Order"}
+        {placeOrderMutation.isPending ? "Placing Order..." : "Place Order"}
         </button>
       </div>
 

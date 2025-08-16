@@ -17,7 +17,7 @@ const OrderPlacedModal = ({ isOpen, onClose }) => {
               Home
             </button>
           </Link>
-          <Link to="#" onClick={onClose}>
+          <Link to="/setting" onClick={onClose}>
             <button className="bg-black text-white px-6 py-2 rounded-full hover:bg-gray-800">
               Orders
             </button>

@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import axios from "@/lib/axios";
 
@@ -31,5 +31,20 @@ export const usePlaceOrder = (token) => {
         error.response?.data?.msg || error.message || "Failed to place order";
       toast.error(message);
     },
+  });
+};
+
+
+export const useInfiniteOrders = (userId) => {
+  return useInfiniteQuery({
+    queryKey: ['orders', userId],
+    queryFn: async ({ pageParam = 1 }) => {
+      const { data } = await axios.get(`/order/user/${userId}?page=${pageParam}&limit=10`);
+      return data;
+    },
+    getNextPageParam: (lastPage) => {
+      return lastPage.hasMore ? lastPage.page + 1 : undefined;
+    },
+    enabled: !!userId,
   });
 };
