@@ -12,6 +12,7 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import Settings from "./pages/Settings";
 import WishList from "./pages/WishList";
 import Register from "./pages/Register";
+import Reviews from "./pages/Reviews";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/products" element={<Products />} />
         <Route path="/product/:id" element={<ProductDetails />} />
+        <Route path="/reviews/:id" element={<Reviews />} />
         <Route
           path="/cart"
           element={

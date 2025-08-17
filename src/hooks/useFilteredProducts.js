@@ -7,8 +7,6 @@ const fetchProducts = async ({ queryKey }) => {
     { search, category, in_stock, out_of_stock, is_best_selling, size, page },
   ] = queryKey;
 
-  console.log(search, category, in_stock, out_of_stock, is_best_selling, size, page)
-
   const res = await axios.get(`/products`, {
     params: {
       search,

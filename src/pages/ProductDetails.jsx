@@ -7,10 +7,12 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
 import useWishlist from "@/hooks/useWishlist";
+import { useRelatedProducts } from "@/hooks/useRelatedProducts";
 
 const ProductDetails = () => {
   const { id } = useParams();
   const { data, isLoading, error } = useVariant(id);
+  const { data: relatedProducts, isLoading: loadingRelated } = useRelatedProducts(id);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -281,8 +283,8 @@ const ProductDetails = () => {
                 {reviews.length > 3 && (
                   <div className="text-center mt-4">
                     <button
-                      onClick={() => navigate("/reviews")}
-                      className="text-black text-sm bg-green-600 px-4 py-2"
+                      onClick={() => navigate(`/reviews/${variant.id}`)} // ✅ pass variant id
+                      className="text-sm bg-green-600 px-4 py-2 rounded-full text-white mb-5 cursor-pointer"
                     >
                       View More Reviews →
                     </button>
@@ -297,25 +299,18 @@ const ProductDetails = () => {
       {/* Related Products */}
       <div className="mt-10">
         <h2 className="text-4xl font-semibold mb-8">Related Products</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[...Array(4)].map((_, i) => (
-            <ProductCard
-              key={i}
-              product={{
-                title: name,
-                variants: [
-                  {
-                    id,
-                    name,
-                    images,
-                    size_options: [currentSize],
-                    average_rating: averageRating(reviews),
-                  },
-                ],
-              }}
-            />
-          ))}
-        </div>
+
+        {loadingRelated ? (
+          <p>Loading related products...</p>
+        ) : relatedProducts?.length ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {relatedProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-500">No related products found.</p>
+        )}
       </div>
     </div>
   );
