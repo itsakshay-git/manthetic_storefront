@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useVariant } from "@/hooks/useVariant";
-import { Star } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Star, Heart } from "lucide-react";
 import ProductCard from "@/components/Products/ProductCard";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
+import useWishlist from "@/hooks/useWishlist";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -18,7 +18,16 @@ const ProductDetails = () => {
   const [selectedImage, setSelectedImage] = useState("");
   const [quantity, setQuantity] = useState(1);
 
-  const token =localStorage.getItem("manthetic_token");
+  const token = localStorage.getItem("manthetic_token");
+
+  // ✅ Wishlist hook
+  const { data: wishlistData, addToWishlist, removeFromWishlist } = useWishlist(token);
+
+  // Flatten wishlist variantIds
+  const wishlistItems =
+    wishlistData?.pages.flatMap((page) =>
+      page.products.flatMap((p) => p.variants?.map((v) => v.id))
+    ) || [];
 
   useEffect(() => {
     if (data?.images?.length) {
@@ -33,8 +42,7 @@ const ProductDetails = () => {
   }, [data?.size_options, selectedSize]);
 
   if (isLoading) return <div className="p-10">Loading...</div>;
-  if (error)
-    return <div className="p-10 text-red-500">Error fetching variant</div>;
+  if (error) return <div className="p-10 text-red-500">Error fetching variant</div>;
 
   const variant = data ?? {};
   const {
@@ -44,38 +52,48 @@ const ProductDetails = () => {
     size_options = [],
     reviews = [],
   } = variant;
+
   const currentSize =
     size_options.find((s) => s.size === selectedSize) || size_options[0];
 
-const handleAddToCart = async () => {
-  if (!token) return toast.error("You must be logged in to add to cart.");
+  const isWishlisted = wishlistItems.includes(variant.id);
 
-  try {
-    const response = await axios.post(
-      "http://localhost:5000/api/cart",
-      {
-        variant_id: variant.id,
-        quantity,
-        selected_size: selectedSize,
-        selected_price: currentSize?.price || 0
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+  const handleAddToCart = async () => {
+    if (!token) return toast.error("You must be logged in to add to cart.");
+
+    try {
+      await axios.post(
+        "http://localhost:5000/api/cart",
+        {
+          variant_id: variant.id,
+          quantity,
+          selected_size: selectedSize,
+          selected_price: currentSize?.price || 0,
         },
-      }
-    );
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    toast.success("Added to cart successfully");
-    queryClient.invalidateQueries(["cart"]);
-    // Optional: dispatch to Redux
-    // dispatch(addToCart(response.data));
-  } catch (err) {
-    toast.error("Failed to add to cart");
-  }
-};
+      toast.success("Added to cart successfully");
+      queryClient.invalidateQueries(["cart"]);
+    } catch (err) {
+      toast.error("Failed to add to cart");
+    }
+  };
 
+  // ✅ Wishlist toggle handler
+  const handleToggleWishlist = () => {
+    if (!token) return toast.error("You must be logged in to use wishlist.");
+    if (isWishlisted) {
+      removeFromWishlist.mutate({ variantId: variant.id });
+    } else {
+      addToWishlist.mutate({ productId: variant.product_id, variantId: variant.id });
+    }
+  };
 
   return (
     <div className="px-6 md:px-32 py-12">
@@ -83,7 +101,6 @@ const handleAddToCart = async () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* Left: Images */}
         <div className="flex flex-col gap-4">
-          {/* Main Image Container */}
           <div className="w-full h-[480px] bg-white border border-gray-300 rounded-lg flex items-center justify-center overflow-hidden">
             <img
               src={selectedImage || "/fallback.jpg"}
@@ -92,7 +109,6 @@ const handleAddToCart = async () => {
             />
           </div>
 
-          {/* Thumbnails */}
           <div className="flex gap-2 overflow-x-auto">
             {images.map((img, i) => (
               <button
@@ -115,14 +131,10 @@ const handleAddToCart = async () => {
         {/* Right: Product Details */}
         <div className="flex flex-col justify-start py-5">
           <div className="flex flex-col gap-6">
-            {/* Category Chip */}
-            {/* {variant.category && ( */}
             <span className="self-start bg-gray-200 text-sm px-3 py-1 rounded-full text-gray-700">
               {"category"}
             </span>
-            {/* )} */}
 
-            {/* Title & Price */}
             <div>
               <h1 className="text-4xl font-bold mb-6">{name}</h1>
               <div className="flex items-center gap-2 mt-2">
@@ -138,7 +150,6 @@ const handleAddToCart = async () => {
               </div>
             </div>
 
-            {/* Stock */}
             <p className="text-sm text-gray-600">Stock: {currentSize.stock}</p>
 
             {/* Size Selector */}
@@ -161,38 +172,48 @@ const handleAddToCart = async () => {
 
             {/* Buttons */}
             <div className="mt-4 space-y-4">
-            {/* Quantity Selector */}
-            <div className="flex items-center justify-start w-fit border border-gray-300 rounded-full px-4 py-1">
+              <div className="flex items-center justify-start w-fit border border-gray-300 rounded-full px-4 py-1">
                 <button
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="text-lg font-bold px-2"
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="text-lg font-bold px-2"
                 >
-                -
+                  -
                 </button>
                 <span className="mx-2 text-sm">{quantity}</span>
                 <button
-                onClick={() => setQuantity(quantity + 1)}
-                className="text-lg font-bold px-2"
+                  onClick={() => setQuantity(quantity + 1)}
+                  className="text-lg font-bold px-2"
                 >
-                +
+                  +
                 </button>
-            </div>
+              </div>
 
-            {/* Buttons */}
-            <div className="flex gap-4">
+              <div className="flex gap-4">
                 <button
-                onClick={handleAddToCart}
-                className="bg-black text-white px-6 py-2 rounded-full"
+                  onClick={handleAddToCart}
+                  className="bg-black text-white px-6 py-2 rounded-full"
                 >
-                Add to Cart
+                  Add to Cart
                 </button>
-                <button className="border border-gray-400 hover:text-white hover:bg-black text-black px-6 py-2 rounded-full">
-                Add to Wishlist
+
+                {/* ✅ Wishlist Button */}
+                <button
+                  onClick={handleToggleWishlist}
+                  className={`flex items-center gap-2 border px-6 py-2 rounded-full transition ${
+                    isWishlisted
+                      ? "border-red-500 text-red-500 bg-red-100"
+                      : "border-gray-400 text-black hover:text-white hover:bg-black"
+                  }`}
+                >
+                  <Heart
+                    size={18}
+                    className={isWishlisted ? "fill-current" : ""}
+                  />
+                  {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
                 </button>
-            </div>
+              </div>
             </div>
 
-            {/* Policy Links */}
             <div className="flex gap-4 mt-4">
               <a
                 href="/shipping"
@@ -257,7 +278,6 @@ const handleAddToCart = async () => {
                   </div>
                 ))}
 
-                {/* Show "View More" if more than 3 reviews */}
                 {reviews.length > 3 && (
                   <div className="text-center mt-4">
                     <button
@@ -274,7 +294,7 @@ const handleAddToCart = async () => {
         </div>
       </div>
 
-      {/* Related products (static layout for now) */}
+      {/* Related Products */}
       <div className="mt-10">
         <h2 className="text-4xl font-semibold mb-8">Related Products</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

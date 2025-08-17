@@ -6,12 +6,31 @@ import userImage from "../assets/images/userImage.png";
 import { useInView } from "react-intersection-observer";
 import { useUpdatePassword } from "@/hooks/useUpdatePassword";
 import { useForm } from "react-hook-form";
+import { useInfiniteDeliveredOrders } from "@/hooks/useInfiniteDeliveredOrders";
 
 const Settings = () => {
   const { user } = useSelector((state) => state.auth);
   const [activeTab, setActiveTab] = useState("orders");
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
   const updatePassword = useUpdatePassword();
+
+  const {
+  data: deliveredData,
+  fetchNextPage: fetchNextDelivered,
+  hasNextPage: hasNextDelivered,
+  isFetchingNextPage: isFetchingNextDelivered,
+  isLoading: isLoadingDelivered,
+  isError: isErrorDelivered,
+} = useInfiniteDeliveredOrders(user?.id);
+
+const { ref: deliveredRef, inView: deliveredInView } = useInView();
+useEffect(() => {
+  if (deliveredInView && hasNextDelivered) {
+    fetchNextDelivered();
+  }
+}, [deliveredInView, hasNextDelivered, fetchNextDelivered]);
+
+const deliveredOrders = deliveredData?.pages.flatMap(p => p.orders) || [];
 
 useEffect(() => {
   if (updatePassword.isSuccess) {
@@ -80,6 +99,22 @@ useEffect(() => {
           }`}
         >
           Orders
+        </button>
+        <button
+          onClick={() => setActiveTab("delivered")}
+          className={`pb-2 ${
+            activeTab === "delivered" ? "border-b border-green-500 text-green-500" : "text-gray-500"
+          }`}
+        >
+          Delivered Orders
+        </button>
+          <button
+          onClick={() => setActiveTab("orders")}
+          className={`pb-2 ${
+            activeTab === "orders" ? "border-b border-green-500 text-green-500" : "text-gray-500"
+          }`}
+        >
+          My Reviews
         </button>
       </div>
 
@@ -188,6 +223,79 @@ useEffect(() => {
           </div>
         </div>
       )}
+
+      {activeTab === "delivered" && (
+  <div className="space-y-4">
+    {isLoadingDelivered && <p>Loading delivered orders...</p>}
+    {isErrorDelivered && <p className="text-red-500">Failed to fetch delivered orders.</p>}
+    
+    {deliveredOrders.map(order => (
+      <div key={order.id} className="border border-gray-300 rounded-lg p-4 shadow-sm bg-white">
+        <div className="flex justify-between items-center mb-2">
+          <span className="font-semibold text-blue-600">Order #{order.id}</span>
+          <span className="text-sm text-gray-500">
+            {dayjs(order.created_at).format("DD MMM YYYY, hh:mm A")}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3">
+          <div>
+            <p className="text-sm text-gray-600">Status</p>
+            <span className="inline-block px-2 py-1 text-xs font-semibold rounded-full bg-green-900 text-white">
+              {order.status}
+            </span>
+          </div>
+          <div>
+            <p className="text-sm text-gray-600">Payment</p>
+            <span className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${
+              order.payment_status === "PAID" ? "bg-green-100 text-green-800" :
+              order.payment_status === "PENDING" ? "bg-yellow-100 text-yellow-800" :
+              order.payment_status === "FAILED" ? "bg-red-100 text-red-800" : "bg-gray-100 text-gray-800"
+            }`}>
+              {order.payment_status}
+            </span>
+          </div>
+          <div>
+            <p className="text-sm text-gray-600">Total Amount</p>
+            <p>₹{order.total_amount}</p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-600">Items</p>
+            <p>{order.items.length}</p>
+          </div>
+        </div>
+
+        <div className="space-y-2 border-t border-t-gray-300 pt-2">
+          {order.items.map(item => (
+            <div key={item.id} className="p-3 bg-gray-50 rounded flex flex-col md:flex-row md:justify-between md:items-center">
+              <div className="flex gap-4">
+                <img src={item.images[0]} alt={item.variant_name} className="w-10 h-10 object-contain"/>
+                <div>
+                  <p className="text-sm font-semibold">{item.product_name}</p>
+                  <p className="text-gray-500 text-sm">Variant: {item.variant_name}</p>
+                </div>
+              </div>
+              <div className="flex gap-4 text-sm mt-2 md:mt-0">
+                <span>Size: {item.size}</span>
+                <span>Qty: {item.quantity}</span>
+                <span>Price: ₹{item.price}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+    </div>
+    ))}
+
+    {/* Loader / Infinite Scroll */}
+    <div ref={deliveredRef} className="text-center py-4 text-gray-500">
+      {isFetchingNextDelivered
+        ? "Loading more delivered orders..."
+        : hasNextDelivered
+        ? "Scroll down to load more"
+        : "No more delivered orders"}
+    </div>
+  </div>
+)}
 
       {/* Password Tab */}
       {activeTab === "password" && (

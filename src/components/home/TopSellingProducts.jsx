@@ -13,7 +13,7 @@ const TopSellingProducts = () => {
 
   return (
     <section className="w-full px-4 md:px-32 py-20">
-      <div className="flex justify-center items-center flex-col mb-20">
+      <div className="flex justify-center items-center flex-col mb-16 sm:mb-20">
         <h2 className="text-2xl md:text-5xl font-bold text-gray-800">
           Top Selling Products
         </h2>
@@ -25,7 +25,7 @@ const TopSellingProducts = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-5 gap-6">
         {products.slice(0, 8).map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}

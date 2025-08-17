@@ -16,10 +16,8 @@ const useWishlist = (token, limit = 12) => {
       return res.data; // { products, totalCount, page, totalPages }
     },
     getNextPageParam: (lastPage) => {
-      if (lastPage.page < lastPage.totalPages) {
-        return lastPage.page + 1;
-      }
-      return undefined;
+      // include last page
+      return lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined;
     },
     enabled: !!token,
   });

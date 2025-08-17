@@ -50,7 +50,7 @@ export default function ProductCard({ product }) {
               <img
                 src={variant.images?.[0] || "/placeholder.png"}
                 alt={product.title}
-                className="w-full h-72 object-cover transform group-hover:scale-105 transition-transform duration-300 ease-in-out"
+                className="w-full h-50 sm:h-72 object-cover transform group-hover:scale-105 transition-transform duration-300 ease-in-out"
               />
             </div>
 
@@ -71,7 +71,7 @@ export default function ProductCard({ product }) {
             </div>
 
             {/* Buttons */}
-            <div className="absolute bottom-20 w-full flex justify-center gap-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 ease-in-out">
+            <div className="absolute bottom-20 sm:bottom-20 w-full flex justify-center gap-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 ease-in-out">
               <button
                 onClick={() => handleAddToCart(variant)}
                 className="bg-white text-black text-sm font-medium px-4 py-1 rounded-full shadow hover:bg-black hover:text-white transition cursor-pointer"
@@ -88,7 +88,7 @@ export default function ProductCard({ product }) {
 
             {/* Info */}
             <div className="p-2">
-              <h3 className="mt-2 font-medium text-sm">{variant.name}</h3>
+              <h3 className="mt-2 font-medium text-[12px] sm:text-sm">{variant.name}</h3>
               <div className="flex items-center justify-between text-sm mt-1">
                 <p className="text-gray-600">
                   ₹{variant.size_options?.[0]?.price || "N/A"}

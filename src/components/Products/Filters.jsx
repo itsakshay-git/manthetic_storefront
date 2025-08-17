@@ -45,7 +45,7 @@ export default function Filter({ onApply, onReset }) {
   };
 
   return (
-    <div className="p-4 border border-gray-300 rounded-2xl w-full max-w-[250px]">
+    <div className="p-4 border border-gray-300 rounded-2xl w-full max-w-[250px] hidden sm:block">
       <h2 className="font-semibold mb-3">Filters</h2>
 
       {/* Search */}

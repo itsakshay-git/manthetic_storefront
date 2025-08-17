@@ -1,2 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Boldonse&family=Italiana&family=Rock+Salt&display=swap');
 @import "tailwindcss";
+
+/* no-scrollbar.css */
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE & Edge */
+  scrollbar-width: none;     /* Firefox */
+}

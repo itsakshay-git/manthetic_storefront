@@ -3,6 +3,7 @@ import useCart from "../hooks/useCart";
 // import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { Trash2 } from "lucide-react";
 
 export default function Cart() {
   const token = useSelector((state) => state.auth.token);
@@ -59,7 +60,7 @@ export default function Cart() {
                   onClick={() =>
                     updateQuantity(item.id, Math.max(1, Number(item.quantity) - 1))
                   }
-                  className="px-2 py-1 bg-gray-200 rounded"
+                  className="px-2 py-1 bg-gray-200 rounded cursor-pointer"
                   disabled={Number(item.quantity) <= 1}
                   title={Number(item.quantity) <= 1 ? "Min quantity reached" : ""}
                 >
@@ -70,15 +71,15 @@ export default function Cart() {
                   onClick={() =>
                     updateQuantity(item.id, Number(item.quantity) + 1)
                   }
-                  className="px-2 py-1 bg-gray-200 rounded"
+                  className="px-2 py-1 bg-gray-200 rounded cursor-pointer"
                 >
                   +
                 </button>
                 <button
                   onClick={() => removeItem(item.id)}
-                  className="text-red-500 ml-4"
+                  className="text-red-500 ml-4 cursor-pointer"
                 >
-                  Remove
+                  <Trash2 className="w-5 h-5" />
                 </button>
               </div>
             </div>
