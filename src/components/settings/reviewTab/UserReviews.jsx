@@ -132,75 +132,74 @@ const UserReviews = () => {
             <p className="text-gray-500 text-sm">Variant: {field.variant_name}</p>
           </div>
 
-          {/* Rating + Comment + Button aligned in grid */}
-            <div className="grid grid-cols-[100px_1fr_auto_auto] gap-4 items-start">
+          {/* Rating + Comment + Buttons */}
+          <div className="grid grid-cols-1 sm:grid-cols-[100px_1fr_auto_auto] gap-4 items-start">
             {/* Rating */}
             <div className="flex flex-col gap-1">
-                <Controller
+              <Controller
                 name={`reviews.${index}.rating`}
                 control={control}
                 render={({ field }) => (
-                    <input
+                  <input
                     type="number"
                     min={1}
                     max={5}
                     {...field}
-                    className="border border-gray-300 rounded-lg px-3 py-2 text-center focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
+                    className="border border-gray-300 rounded-lg px-3 py-2 text-center focus:outline-none focus:ring-2 focus:ring-green-500 w-full"
+                  />
                 )}
-                />
-                {errors.reviews?.[index]?.rating && (
+              />
+              {errors.reviews?.[index]?.rating && (
                 <span className="text-red-500 text-xs">
-                    {errors.reviews[index].rating.message}
+                  {errors.reviews[index].rating.message}
                 </span>
-                )}
+              )}
             </div>
 
             {/* Comment */}
             <div className="flex flex-col gap-1">
-                <Controller
+              <Controller
                 name={`reviews.${index}.comment`}
                 control={control}
                 render={({ field }) => (
-                    <textarea
+                  <textarea
                     {...field}
                     rows={2}
                     className="border border-gray-300 rounded-lg px-3 py-2 w-full resize-y focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
+                  />
                 )}
-                />
-                {errors.reviews?.[index]?.comment && (
+              />
+              {errors.reviews?.[index]?.comment && (
                 <span className="text-red-500 text-xs">
-                    {errors.reviews[index].comment.message}
+                  {errors.reviews[index].comment.message}
                 </span>
-                )}
+              )}
             </div>
 
             {/* Update Button */}
             <button
-                type="submit"
-                disabled={mutation.isPending}
-                className="self-start bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition text-sm shadow-sm"
+              type="submit"
+              disabled={mutation.isPending}
+              className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition text-sm shadow-sm w-full sm:w-auto"
             >
-                {mutation.isPending ? "Saving..." : "Update"}
+              {mutation.isPending ? "Saving..." : "Update"}
             </button>
 
             {/* Delete Button */}
             <button
-                type="button"
-                onClick={() => {
+              type="button"
+              onClick={() => {
                 if (window.confirm("Are you sure you want to delete this review?")) {
-                    const reviewValues = getValues(`reviews.${index}`);
-                    deleteMutation.mutate(reviewValues.id);
+                  const reviewValues = getValues(`reviews.${index}`);
+                  deleteMutation.mutate(reviewValues.id);
                 }
-                }}
-                disabled={deleteMutation.isPending}
-                className="self-start bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition text-sm shadow-sm"
+              }}
+              disabled={deleteMutation.isPending}
+              className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition text-sm shadow-sm w-full sm:w-auto flex items-center justify-center"
             >
-                {/* {deleteMutation.isPending ? "Deleting..." : "Delete"} */}
-                <Trash2 className="w-5 h-5" />
+              <Trash2 className="w-5 h-5" />
             </button>
-            </div>
+          </div>
 
           {/* Created at */}
           <p className="text-gray-400 text-xs mt-1">

@@ -193,7 +193,7 @@ const ProductDetails = () => {
               <div className="flex gap-4">
                 <button
                   onClick={handleAddToCart}
-                  className="bg-black text-white px-6 py-2 rounded-full"
+                  className="bg-black text-white text-[14px] md:text-[16px] px-3 py-2 md:px-6 md:py-2 rounded-full"
                 >
                   Add to Cart
                 </button>
@@ -201,7 +201,7 @@ const ProductDetails = () => {
                 {/* ✅ Wishlist Button */}
                 <button
                   onClick={handleToggleWishlist}
-                  className={`flex items-center gap-2 border px-6 py-2 rounded-full transition ${
+                  className={`flex items-center gap-2 border text-[14px] md:text-[16px] px-3 py-1 md:px-6 md:py-2 rounded-full transition ${
                     isWishlisted
                       ? "border-red-500 text-red-500 bg-red-100"
                       : "border-gray-400 text-black hover:text-white hover:bg-black"
@@ -247,12 +247,12 @@ const ProductDetails = () => {
       {/* Reviews */}
       <div className="mt-10">
         <h2 className="text-4xl font-semibold mb-8">Reviews</h2>
-        <div className="flex">
-          <div className="text-6xl font-bold w-[20%] flex justify-center items-center">
+        <div className="block md:flex">
+          <div className="text-6xl font-bold md:w-[20%] flex justify-center items-center mb-10 md:mb-0">
             {averageRating(reviews)}/5
           </div>
 
-          <div className="border border-gray-300 bg-gray-50 rounded-2xl px-2 w-[80%]">
+          <div className="border border-gray-300 bg-gray-50 rounded-2xl px-2 md:w-[80%]">
             {reviews.length === 0 ? (
               <p className="text-center text-gray-500 text-sm py-4">
                 No reviews yet. Be the first to review this product!

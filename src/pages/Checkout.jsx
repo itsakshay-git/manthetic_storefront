@@ -125,11 +125,11 @@ const handlePlaceOrder = () => {
         <div>
           <h2 className="font-bold mb-2">Payment</h2>
           <div className="flex space-x-4">
-            <label className={`border px-4 py-2 rounded-full cursor-pointer ${paymentMethod === "cod" ? "border-green-500" : ""}`}>
+            <label className={`border border-gray-300 px-4 py-2 rounded-full cursor-pointer ${paymentMethod === "cod" ? "border-green-500" : ""}`}>
               <input type="radio" name="payment" value="cod" checked={paymentMethod === "cod"} onChange={() => setPaymentMethod("cod")} className="hidden" />
               Cash on Delivery
             </label>
-            <label className={`border px-4 py-2 rounded-full cursor-pointer ${paymentMethod === "razorpay" ? "border-green-500" : ""}`}>
+            <label className={`border border-gray-300 px-4 py-2 rounded-full cursor-pointer ${paymentMethod === "razorpay" ? "border-green-500" : ""}`}>
               <input type="radio" name="payment" value="razorpay" checked={paymentMethod === "razorpay"} onChange={() => setPaymentMethod("razorpay")} className="hidden" />
               Razorpay
             </label>

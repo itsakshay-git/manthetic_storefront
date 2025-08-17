@@ -3,7 +3,7 @@ import { useCategories } from "@/hooks/useCategories";
 import { filterSchema } from "@/lib/validation/filterSchema";
 import toast from "react-hot-toast";
 
-export default function Filter({ onApply, onReset }) {
+export default function Filter({ onApply, onReset, className = ""}) {
   const [form, setForm] = useState({
     search: "",
     category: "",
@@ -45,7 +45,7 @@ export default function Filter({ onApply, onReset }) {
   };
 
   return (
-    <div className="p-4 border border-gray-300 rounded-2xl w-full max-w-[250px] hidden sm:block">
+    <div className={`p-4 border border-gray-300 rounded-2xl w-full max-w-[250px] ${className}`}>
       <h2 className="font-semibold mb-3">Filters</h2>
 
       {/* Search */}

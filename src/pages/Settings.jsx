@@ -94,40 +94,51 @@ if (isError) return <div className="p-6 text-red-500">Failed to fetch orders.</d
       {/* Profile Card */}
       <ProfileCard user={user}/>
 
+
       {/* Tabs */}
-      <div className="flex justify-center gap-8 border-b border-b-gray-300 mb-6 text-sm font-medium">
-        <button
-          onClick={() => setActiveTab("password")}
-          className={`pb-2 ${
-            activeTab === "password" ? "border-b border-black text-black" : "text-gray-500"
-          }`}
-        >
-          Change Password
-        </button>
-        <button
-          onClick={() => setActiveTab("orders")}
-          className={`pb-2 ${
-            activeTab === "orders" ? "border-b border-green-500 text-green-500" : "text-gray-500"
-          }`}
-        >
-          Orders
-        </button>
-        <button
-          onClick={() => setActiveTab("delivered")}
-          className={`pb-2 ${
-            activeTab === "delivered" ? "border-b border-green-500 text-green-500" : "text-gray-500"
-          }`}
-        >
-          Delivered Orders
-        </button>
+      <div className="overflow-x-auto no-scrollbar">
+        <div className="flex min-w-max gap-6 border-b border-b-gray-300 mb-6 text-sm font-medium px-2">
           <button
-          onClick={() => setActiveTab("review")}
-          className={`pb-2 ${
-            activeTab === "review" ? "border-b border-green-500 text-green-500" : "text-gray-500"
-          }`}
-        >
-          My Reviews
-        </button>
+            onClick={() => setActiveTab("password")}
+            className={`pb-2 whitespace-nowrap ${
+              activeTab === "password"
+                ? "border-b-2 border-black text-black"
+                : "text-gray-500"
+            }`}
+          >
+            Change Password
+          </button>
+          <button
+            onClick={() => setActiveTab("orders")}
+            className={`pb-2 whitespace-nowrap ${
+              activeTab === "orders"
+                ? "border-b-2 border-green-500 text-green-500"
+                : "text-gray-500"
+            }`}
+          >
+            Orders
+          </button>
+          <button
+            onClick={() => setActiveTab("delivered")}
+            className={`pb-2 whitespace-nowrap ${
+              activeTab === "delivered"
+                ? "border-b-2 border-green-500 text-green-500"
+                : "text-gray-500"
+            }`}
+          >
+            Delivered Orders
+          </button>
+          <button
+            onClick={() => setActiveTab("review")}
+            className={`pb-2 whitespace-nowrap ${
+              activeTab === "review"
+                ? "border-b-2 border-green-500 text-green-500"
+                : "text-gray-500"
+            }`}
+          >
+            My Reviews
+          </button>
+        </div>
       </div>
 
       {/* Orders Tab */}

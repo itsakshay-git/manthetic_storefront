@@ -16,7 +16,7 @@ const ProfileCard = ({ user }) => {
     <div className="relative bg-white rounded-xl p-6 flex flex-col items-center">
       <button
         onClick={handleLogout}
-        className="absolute top-4 right-4 px-4 py-1 bg-black text-white rounded-full cursor-pointer hover:bg-gray-800 transition"
+        className="absolute top-1 right-1 px-4 py-1 bg-black text-white rounded-full cursor-pointer hover:bg-gray-800 transition"
       >
         Sign Out
       </button>
