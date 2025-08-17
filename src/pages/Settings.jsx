@@ -97,7 +97,7 @@ if (isError) return <div className="p-6 text-red-500">Failed to fetch orders.</d
 
       {/* Tabs */}
       <div className="overflow-x-auto no-scrollbar">
-        <div className="flex min-w-max gap-6 border-b border-b-gray-300 mb-6 text-sm font-medium px-2">
+        <div className="flex justify-center items-center min-w-max gap-6 border-b border-b-gray-300 mb-6 text-sm font-medium px-2">
           <button
             onClick={() => setActiveTab("password")}
             className={`pb-2 whitespace-nowrap ${
