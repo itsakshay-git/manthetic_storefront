@@ -1,6 +1,7 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import axios from "@/lib/axios";
+import { displayErrorMessages } from "@/utils/errorHandler";
 
 export const usePlaceOrder = (token) => {
   const queryClient = useQueryClient();
@@ -27,9 +28,7 @@ export const usePlaceOrder = (token) => {
       console.log("Order Response:", data);
     },
     onError: (error) => {
-      const message =
-        error.response?.data?.msg || error.message || "Failed to place order";
-      toast.error(message);
+      displayErrorMessages(error, "Failed to place order", toast.error);
     },
   });
 };

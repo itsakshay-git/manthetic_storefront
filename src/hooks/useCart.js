@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import axios from "../lib/axios";
 import { useEffect, useRef } from "react";
 import toast from "react-hot-toast";
+import { displayErrorMessages } from "../utils/errorHandler";
 
 export const fetchCart = async (token) => {
   try {
@@ -70,7 +71,8 @@ export default function useCart(token) {
         queryClient.setQueryData(["cart", token], ctx.prevCart);
         dispatch(setCart(ctx.prevCart));
       }
-      toast.error("Failed to update quantity");
+
+      displayErrorMessages(_err, "Failed to update quantity", toast.error);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["cart", token] });
@@ -137,7 +139,7 @@ export default function useCart(token) {
       queryClient.invalidateQueries(["cart", token]);
     },
     onError: (err) => {
-      toast.error(err?.response?.data?.message || "Failed to add to cart");
+      displayErrorMessages(err, "Failed to add to cart", toast.error);
     },
   });
 

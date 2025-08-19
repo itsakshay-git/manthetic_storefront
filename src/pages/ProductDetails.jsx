@@ -8,6 +8,7 @@ import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
 import useWishlist from "@/hooks/useWishlist";
 import { useRelatedProducts } from "@/hooks/useRelatedProducts";
+import { displayErrorMessages } from "@/utils/errorHandler";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -64,7 +65,7 @@ const ProductDetails = () => {
     if (!token) return toast.error("You must be logged in to add to cart.");
 
     try {
-      await axios.post(
+      const response = await axios.post(
         "http://localhost:5000/api/cart",
         {
           variant_id: variant.id,
@@ -83,7 +84,7 @@ const ProductDetails = () => {
       toast.success("Added to cart successfully");
       queryClient.invalidateQueries(["cart"]);
     } catch (err) {
-      toast.error("Failed to add to cart");
+      displayErrorMessages(err, "Failed to add to cart", toast.error);
     }
   };
 

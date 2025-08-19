@@ -1,6 +1,7 @@
 import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import API from "@/lib/axios";
 import toast from "react-hot-toast";
+import { displayErrorMessages } from "@/utils/errorHandler";
 
 const useWishlist = (token, limit = 12) => {
   const queryClient = useQueryClient();
@@ -37,7 +38,7 @@ const useWishlist = (token, limit = 12) => {
       queryClient.invalidateQueries(["wishlist", token]);
     },
     onError: (err) => {
-      toast.error(err?.response?.data?.error || "Failed to add to wishlist");
+      displayErrorMessages(err, "Failed to add to wishlist", toast.error);
     },
   });
 
@@ -54,7 +55,7 @@ const useWishlist = (token, limit = 12) => {
       queryClient.invalidateQueries(["wishlist", token]);
     },
     onError: (err) => {
-      toast.error(err?.response?.data?.error || "Failed to remove from wishlist");
+      displayErrorMessages(err, "Failed to remove from wishlist", toast.error);
     },
   });
 

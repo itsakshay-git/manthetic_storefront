@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "@/lib/axios";
 import { toast } from "react-hot-toast";
+import { displayErrorMessages } from "@/utils/errorHandler";
 
 export const useAddReview = () => {
   const queryClient = useQueryClient();
@@ -15,7 +16,7 @@ export const useAddReview = () => {
       queryClient.invalidateQueries(['deliveredOrders']); // refresh delivered orders
     },
     onError: (err) => {
-      toast.error(err.response?.data?.error || err.message || "Failed to add review");
+      displayErrorMessages(err, "Failed to add review", toast.error);
     }
   });
 };
