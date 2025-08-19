@@ -13,6 +13,7 @@ const useWishlist = (token, limit = 12) => {
       const res = await API.get(`/wishlist?page=${pageParam}&limit=${limit}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      console.log(res.data);
       return res.data; // { products, totalCount, page, totalPages }
     },
     getNextPageParam: (lastPage) => {

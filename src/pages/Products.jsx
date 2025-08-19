@@ -92,7 +92,7 @@ export default function Products() {
         {/* Sidebar Filter (hidden on mobile) */}
         <div className="hidden md:block">
           <Filter
-          className="hidden md:block"
+            className="hidden md:block"
             onApply={(newFilters) => {
               setFilters({
                 ...newFilters,
@@ -125,7 +125,7 @@ export default function Products() {
             <p>Something went wrong.</p>
           ) : (
             <>
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4">
                 {allProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
@@ -154,32 +154,32 @@ export default function Products() {
 
             {/* Filter Component */}
             <div className="block md:hidden">
-            <Filter
-            className="block md:hidden"
-              onApply={(newFilters) => {
-                setFilters({
-                  ...newFilters,
-                  in_stock: newFilters.stock === "in",
-                  out_of_stock: newFilters.stock === "out",
-                });
-                setPage(1);
-                setAllProducts([]);
-                setIsFilterOpen(false); // ✅ close after apply
-              }}
-              onReset={() => {
-                setFilters({
-                  search: "",
-                  category: "",
-                  in_stock: false,
-                  out_of_stock: false,
-                  is_best_selling: false,
-                  size: "",
-                });
-                setPage(1);
-                setAllProducts([]);
-                setIsFilterOpen(false);
-              }}
-            />
+              <Filter
+                className="block md:hidden"
+                onApply={(newFilters) => {
+                  setFilters({
+                    ...newFilters,
+                    in_stock: newFilters.stock === "in",
+                    out_of_stock: newFilters.stock === "out",
+                  });
+                  setPage(1);
+                  setAllProducts([]);
+                  setIsFilterOpen(false); // ✅ close after apply
+                }}
+                onReset={() => {
+                  setFilters({
+                    search: "",
+                    category: "",
+                    in_stock: false,
+                    out_of_stock: false,
+                    is_best_selling: false,
+                    size: "",
+                  });
+                  setPage(1);
+                  setAllProducts([]);
+                  setIsFilterOpen(false);
+                }}
+              />
             </div>
           </div>
         </div>

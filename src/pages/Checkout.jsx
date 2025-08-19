@@ -19,7 +19,7 @@ const addressSchema = z.object({
 });
 
 const Checkout = () => {
-    const { user } = useSelector((state) => state.auth); // Replace with logged-in user's ID
+  const { user } = useSelector((state) => state.auth); // Replace with logged-in user's ID
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("cod");
 
@@ -31,27 +31,27 @@ const Checkout = () => {
   const [showModal, setShowModal] = useState(false);
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
-  resolver: zodResolver(addressSchema)
-});
+    resolver: zodResolver(addressSchema)
+  });
 
-const onSubmit = (data) => {
-  addAddressMutation.mutate(
-    { ...data, user_id: user.id }, // inject here
-    { onSuccess: () => reset() }
-  );
-};
+  const onSubmit = (data) => {
+    addAddressMutation.mutate(
+      { ...data, user_id: user.id }, // inject here
+      { onSuccess: () => reset() }
+    );
+  };
 
 
-const handlePlaceOrder = () => {
-  placeOrderMutation.mutate({
-    address_id: selectedAddress,
-    payment_method: paymentMethod,
-  },{
-        onSuccess: () => {
-          setShowModal(true);
-        }
-      });
-};
+  const handlePlaceOrder = () => {
+    placeOrderMutation.mutate({
+      address_id: selectedAddress,
+      payment_method: paymentMethod,
+    }, {
+      onSuccess: () => {
+        setShowModal(true);
+      }
+    });
+  };
 
   return (
     <div className="px-6 md:px-32 grid grid-cols-1 md:grid-cols-2 gap-8 p-6">
@@ -75,10 +75,10 @@ const handlePlaceOrder = () => {
         <input placeholder="Phone" {...register("phone")} className="w-full border border-gray-300 p-2 rounded" />
         {errors.phone && <p className="text-red-500">{errors.phone.message}</p>}
 
-        <button 
-        type="submit"
-        disabled={addAddressMutation.isLoading}
-        className={`bg-black text-white px-4 py-2 rounded-full w-full cursor-pointer 
+        <button
+          type="submit"
+          disabled={addAddressMutation.isLoading}
+          className={`bg-black text-white px-4 py-2 rounded-full w-full cursor-pointer 
         ${addAddressMutation.isLoading ? "opacity-70 cursor-not-allowed" : ""}`}
         >
           {addAddressMutation.isLoading ? "Saving..." : "Save"}
@@ -97,24 +97,23 @@ const handlePlaceOrder = () => {
                 <div
                   key={addr.id}
                   onClick={() => setSelectedAddress(addr.id)}
-                  className={`p-4 border border-gray-300 rounded-2xl cursor-pointer flex justify-between items-center ${
-                    selectedAddress === addr.id ? "border-green-500" : "border-gray-300"
-                  }`}
+                  className={`p-4 border border-gray-300 rounded-2xl cursor-pointer flex justify-between items-center ${selectedAddress === addr.id ? "border-green-500" : "border-gray-300"
+                    }`}
                 >
                   <div>
                     <p>{addr.street}, {addr.city}, {addr.state}, {addr.country}, {addr.zipcode}</p>
                     <p className="text-sm text-gray-500">{addr.phone}</p>
                   </div>
-                    <button
-                        type="button"
-                        onClick={(e) => {
-                        e.stopPropagation();
-                        deleteAddressMutation.mutate(addr.id);
-                        }}
-                        className="text-red-500 hover:text-red-700"
-                    >
-                        <Trash2 className="w-5 h-5" />
-                    </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteAddressMutation.mutate(addr.id);
+                    }}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
                 </div>
               ))}
             </div>
@@ -129,19 +128,19 @@ const handlePlaceOrder = () => {
               <input type="radio" name="payment" value="cod" checked={paymentMethod === "cod"} onChange={() => setPaymentMethod("cod")} className="hidden" />
               Cash on Delivery
             </label>
-            <label className={`border border-gray-300 px-4 py-2 rounded-full cursor-pointer ${paymentMethod === "razorpay" ? "border-green-500" : ""}`}>
-              <input type="radio" name="payment" value="razorpay" checked={paymentMethod === "razorpay"} onChange={() => setPaymentMethod("razorpay")} className="hidden" />
+            <label className={`border border-gray-300 px-4 py-2 rounded-full cursor-pointer ${paymentMethod === "online" ? "border-green-500" : ""}`}>
+              <input type="radio" name="payment" value="razorpay" checked={paymentMethod === "razorpay"} onChange={() => setPaymentMethod("online")} className="hidden" />
               Razorpay
             </label>
           </div>
         </div>
 
         <button
-        onClick={handlePlaceOrder}
-        disabled={placeOrderMutation.isPending}
-        className="bg-black text-white px-4 py-2 rounded-full w-full hover:bg-green-600 cursor-pointer"
+          onClick={handlePlaceOrder}
+          disabled={placeOrderMutation.isPending}
+          className="bg-black text-white px-4 py-2 rounded-full w-full hover:bg-green-600 cursor-pointer"
         >
-        {placeOrderMutation.isPending ? "Placing Order..." : "Place Order"}
+          {placeOrderMutation.isPending ? "Placing Order..." : "Place Order"}
         </button>
       </div>
 

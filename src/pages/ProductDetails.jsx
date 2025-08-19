@@ -51,12 +51,12 @@ const ProductDetails = () => {
     name,
     description,
     images = [],
-    size_options = [],
+    sizeOptions = [],
     reviews = [],
   } = variant;
 
   const currentSize =
-    size_options.find((s) => s.size === selectedSize) || size_options[0];
+    sizeOptions.find((s) => s.size === selectedSize) || sizeOptions[0];
 
   const isWishlisted = wishlistItems.includes(variant.id);
 
@@ -93,7 +93,7 @@ const ProductDetails = () => {
     if (isWishlisted) {
       removeFromWishlist.mutate({ variantId: variant.id });
     } else {
-      addToWishlist.mutate({ productId: variant.product_id, variantId: variant.id });
+      addToWishlist.mutate({ productId: variant.productId, variantId: variant.id });
     }
   };
 
@@ -116,9 +116,8 @@ const ProductDetails = () => {
               <button
                 key={i}
                 onClick={() => setSelectedImage(img)}
-                className={`w-16 h-16 rounded overflow-hidden shrink-0 ${
-                  selectedImage === img ? "ring-2 ring-black" : ""
-                }`}
+                className={`w-16 h-16 rounded overflow-hidden shrink-0 ${selectedImage === img ? "ring-2 ring-black" : ""
+                  }`}
               >
                 <img
                   src={img}
@@ -157,15 +156,14 @@ const ProductDetails = () => {
             {/* Size Selector */}
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-gray-700 text-sm">Select Size:</span>
-              {size_options.map((opt) => (
+              {sizeOptions.map((opt) => (
                 <button
                   key={opt.size}
                   onClick={() => setSelectedSize(opt.size)}
-                  className={`px-4 py-1 border rounded-full text-sm ${
-                    selectedSize === opt.size
-                      ? "bg-black text-white border-black"
-                      : "text-gray-700"
-                  }`}
+                  className={`px-4 py-1 border rounded-full text-sm ${selectedSize === opt.size
+                    ? "bg-black text-white border-black"
+                    : "text-gray-700"
+                    }`}
                 >
                   {opt.size}
                 </button>
@@ -201,11 +199,10 @@ const ProductDetails = () => {
                 {/* ✅ Wishlist Button */}
                 <button
                   onClick={handleToggleWishlist}
-                  className={`flex items-center gap-2 border text-[14px] md:text-[16px] px-3 py-1 md:px-6 md:py-2 rounded-full transition ${
-                    isWishlisted
-                      ? "border-red-500 text-red-500 bg-red-100"
-                      : "border-gray-400 text-black hover:text-white hover:bg-black"
-                  }`}
+                  className={`flex items-center gap-2 border text-[14px] md:text-[16px] px-3 py-1 md:px-6 md:py-2 rounded-full transition ${isWishlisted
+                    ? "border-red-500 text-red-500 bg-red-100"
+                    : "border-gray-400 text-black hover:text-white hover:bg-black"
+                    }`}
                 >
                   <Heart
                     size={18}

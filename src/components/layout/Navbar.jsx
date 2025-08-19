@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Search, User, ShoppingBag, Heart } from "lucide-react"; // ⬅ Added Heart
-import { useState } from "react";
+import { Search, User, ShoppingBag, Heart } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useCart from "@/hooks/useCart";
 import { logout } from "@/redux/slices/authSlice";
@@ -8,6 +8,7 @@ import { logout } from "@/redux/slices/authSlice";
 const Navbar = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showMenu, setShowMenu] = useState(false);
+  const menuRef = useRef(null);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -41,6 +42,19 @@ const Navbar = () => {
     dispatch(logout());
     navigate("/login");
   };
+
+  // ✅ Close menu on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setShowMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <header className="w-full px-6 md:px-32 py-4 flex items-center justify-between border-b border-gray-200 bg-white relative">
@@ -79,14 +93,14 @@ const Navbar = () => {
           <Heart className="w-5 h-5 text-black cursor-pointer" />
         </Link>
 
-        {/* User Icon */}
-        <div className="relative">
+        {/* User Icon + Dropdown */}
+        <div className="relative" ref={menuRef}>
           <User
             className="w-5 h-5 text-black cursor-pointer"
             onClick={handleUserClick}
           />
           {showMenu && user && (
-            <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg overflow-hidden">
+            <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg overflow-hidden z-50">
               <Link
                 to={"/setting"}
                 className="block px-4 py-2 text-sm hover:bg-gray-100 w-full text-left"
