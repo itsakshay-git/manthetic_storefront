@@ -28,30 +28,39 @@ const Register = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-50">
-      <div className="w-full max-w-5xl bg-white rounded-2xl shadow p-10 flex gap-12">
+    <div className="flex justify-center items-center min-h-screen bg-gray-50 px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-5xl bg-white rounded-2xl shadow p-4 sm:p-6 lg:p-10 flex flex-col lg:flex-row gap-6 lg:gap-12">
         {/* Left Side - Branding */}
-        <div className="flex-1 flex flex-col justify-center items-center">
-          <h1 className="text-6xl font-bold">Manthetic</h1>
-          <p className="mt-4 text-gray-600 max-w-sm">
+        <div className="flex-1 flex flex-col justify-center items-center order-2 lg:order-1">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-center">Manthetic</h1>
+          <p className="mt-3 sm:mt-4 text-sm sm:text-base text-gray-600 text-center max-w-xs sm:max-w-sm">
             Stylish menswear. Manage your account and orders.
           </p>
-          <img src={hero1} alt="mentetic product image" className="h-64 w-96 object-contain rounded-2xl m-4"/>
+          <img
+            src={hero1}
+            alt="mentetic product image"
+            className="h-48 w-72 sm:h-56 sm:w-80 lg:h-64 lg:w-96 object-contain rounded-2xl mt-4 sm:mt-6"
+          />
         </div>
 
         {/* Right Side - Register Form */}
-        <div className="flex-1">
-          <div className="bg-white border border-gray-300 rounded-2xl p-8 shadow-sm">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        <div className="flex-1 order-1 lg:order-2">
+          <div className="bg-white border border-gray-300 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-sm">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 text-gray-900 lg:hidden">
+              Create Account
+            </h2>
+
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-5">
               {/* Name */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Name
                 </label>
                 <input
                   type="text"
                   {...register("name")}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-gray-200"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-200 focus:border-gray-400 transition-colors"
+                  placeholder="Enter your full name"
                 />
                 {errors.name && (
                   <p className="text-red-500 text-sm mt-1">
@@ -62,13 +71,14 @@ const Register = () => {
 
               {/* Email */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Email
                 </label>
                 <input
                   type="email"
                   {...register("email")}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-gray-200"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-200 focus:border-gray-400 transition-colors"
+                  placeholder="you@example.com"
                 />
                 {errors.email && (
                   <p className="text-red-500 text-sm mt-1">
@@ -79,13 +89,14 @@ const Register = () => {
 
               {/* Password */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Password
                 </label>
                 <input
                   type="password"
                   {...register("password")}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-gray-200"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-200 focus:border-gray-400 transition-colors"
+                  placeholder="Create a strong password"
                 />
                 {errors.password && (
                   <p className="text-red-500 text-sm mt-1">
@@ -98,22 +109,22 @@ const Register = () => {
               <button
                 type="submit"
                 disabled={registerMutation.isPending}
-                className="w-full bg-black text-white py-2 rounded-full hover:bg-gray-900 transition disabled:opacity-50"
+                className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-900 transition-colors disabled:opacity-50 font-medium text-base mt-6"
               >
                 {registerMutation.isPending ? "Signing up..." : "Sign Up"}
               </button>
             </form>
-                        {/* Already a user? */}
-            <p className="text-sm text-center text-gray-500 mt-5">
+
+            {/* Already a user? */}
+            <p className="text-sm text-center text-gray-500 mt-6">
               Already a user?{" "}
               <button
                 onClick={() => navigate("/login")}
-                className="text-black font-medium hover:underline"
+                className="text-black font-medium hover:underline transition-colors"
               >
                 Login
               </button>
             </p>
-
           </div>
         </div>
       </div>
