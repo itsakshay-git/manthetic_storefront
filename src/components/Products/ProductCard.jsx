@@ -64,47 +64,47 @@ export default function ProductCard({ product }) {
               />
             </div>
 
-            {/* Wishlist Heart */}
+            {/* Wishlist Heart - Always visible on mobile, hover effect on desktop */}
             <div
               onClick={() => handleToggleWishlist(variant.id)}
-              className="absolute top-2 right-2 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 ease-in-out"
+              className="absolute top-2 right-2 opacity-100 sm:opacity-0 sm:translate-y-2 sm:group-hover:opacity-100 sm:group-hover:translate-y-0 transition-all duration-300 ease-in-out"
             >
               <Heart
                 size={24}
                 className={`rounded-full p-1 cursor-pointer ${!user || !token
-                  ? "text-gray-400 bg-white/80 hover:text-gray-600"
+                  ? "text-gray-400 bg-white/80 hover:text-gray-600 active:scale-95"
                   : isWishlisted
-                    ? "text-red-500 bg-white"
-                    : "text-white bg-black/50"
+                    ? "text-red-500 bg-white hover:scale-110 active:scale-95"
+                    : "text-white bg-black/50 hover:scale-110 active:scale-95"
                   }`}
                 fill={!user || !token ? "none" : isWishlisted ? "currentColor" : "none"}
                 title={!user || !token ? "Login to use wishlist" : isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
               />
-              {/* Login prompt for non-authenticated users */}
+              {/* Login prompt for non-authenticated users - Always visible on mobile */}
               {(!user || !token) && (
-                <div className="absolute top-8 right-0 bg-black text-white text-[10px] px-1.5 py-0.5 rounded whitespace-nowrap opacity-0 hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                <div className="absolute top-8 right-0 bg-black text-white text-[10px] px-1.5 py-0.5 rounded whitespace-nowrap opacity-100 sm:opacity-0 sm:hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
                   Login required
                   <div className="absolute -top-1 right-2 w-1.5 h-1.5 bg-black transform rotate-45"></div>
                 </div>
               )}
             </div>
 
-            {/* Buttons */}
-            <div className="absolute bottom-28 sm:bottom-24 md:bottom-36 lg:bottom-24 w-full flex justify-center gap-3 sm:gap-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 ease-in-out">
+            {/* Buttons - Always visible on mobile, hover effect on desktop */}
+            <div className="absolute bottom-28 sm:bottom-24 md:bottom-36 lg:bottom-24 w-full flex justify-center gap-3 sm:gap-4 opacity-100 sm:opacity-0 sm:translate-y-4 sm:group-hover:opacity-100 sm:group-hover:translate-y-0 transition-all duration-300 ease-in-out">
               <div className="relative">
                 <button
                   onClick={() => handleAddToCart(variant)}
                   className={`text-xs sm:text-sm font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-lg transition-all duration-200 cursor-pointer ${!user || !token
-                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                    ? "bg-gray-200 text-gray-500 cursor-not-allowed active:scale-95"
                     : "bg-green-600 text-white hover:bg-green-700 hover:scale-105 active:scale-95"
                     }`}
                   title={!user || !token ? "Login to add to cart" : "Add to cart"}
                 >
                   Add
                 </button>
-                {/* Login prompt for non-authenticated users */}
+                {/* Login prompt for non-authenticated users - Always visible on mobile */}
                 {(!user || !token) && (
-                  <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-black text-white text-[10px] px-1.5 py-0.5 rounded whitespace-nowrap opacity-0 hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                  <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-black text-white text-[10px] px-1.5 py-0.5 rounded whitespace-nowrap opacity-100 sm:opacity-0 sm:hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
                     Login required
                     <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-black transform rotate-45"></div>
                   </div>
