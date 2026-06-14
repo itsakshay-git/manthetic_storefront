@@ -7,6 +7,8 @@ import { useSelector } from "react-redux";
 import { Trash2 } from "lucide-react";
 import { usePlaceOrder } from "@/hooks/useOrders";
 import OrderPlacedModal from "@/components/modal/OrderPlacedModal";
+import StatusPanel from "@/components/common/StatusPanel";
+import { Link } from "react-router-dom";
 
 // Zod schema for validation
 const addressSchema = z.object({
@@ -19,13 +21,13 @@ const addressSchema = z.object({
 });
 
 const Checkout = () => {
-  const { user } = useSelector((state) => state.auth); // Replace with logged-in user's ID
+  const { user } = useSelector((state) => state.auth);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("cod");
 
-  const { data: addresses, isLoading } = useAddresses(user.id);
-  const addAddressMutation = useAddAddress(user.id);
-  const deleteAddressMutation = useDeleteAddress(user.id);
+  const { data: addresses = [], isLoading, isError } = useAddresses(user?.id);
+  const addAddressMutation = useAddAddress(user?.id);
+  const deleteAddressMutation = useDeleteAddress(user?.id);
   const token = useSelector((state) => state.auth.token);
   const placeOrderMutation = usePlaceOrder(token);
   const [showModal, setShowModal] = useState(false);
@@ -36,13 +38,15 @@ const Checkout = () => {
 
   const onSubmit = (data) => {
     addAddressMutation.mutate(
-      { ...data, user_id: user.id }, // inject here
+      data,
       { onSuccess: () => reset() }
     );
   };
 
 
   const handlePlaceOrder = () => {
+    if (!selectedAddress) return;
+
     placeOrderMutation.mutate({
       address_id: selectedAddress,
       payment_method: paymentMethod,
@@ -52,6 +56,25 @@ const Checkout = () => {
       }
     });
   };
+
+  const cannotPlaceOrder = placeOrderMutation.isPending || !selectedAddress;
+
+  if (!user?.id) {
+    return (
+      <div className="px-6 md:px-32 py-8">
+        <StatusPanel
+          type="empty"
+          title="Login Required"
+          message="Please log in before choosing an address and placing an order."
+          action={(
+            <Link to="/login" className="inline-flex bg-black px-5 py-2 rounded-full text-white">
+              Go To Login
+            </Link>
+          )}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="px-6 md:px-32 grid grid-cols-1 md:grid-cols-2 gap-8 p-6">
@@ -77,11 +100,11 @@ const Checkout = () => {
 
         <button
           type="submit"
-          disabled={addAddressMutation.isLoading}
+          disabled={addAddressMutation.isPending}
           className={`bg-black text-white px-4 py-2 rounded-full w-full cursor-pointer 
-        ${addAddressMutation.isLoading ? "opacity-70 cursor-not-allowed" : ""}`}
+        ${addAddressMutation.isPending ? "opacity-70 cursor-not-allowed" : ""}`}
         >
-          {addAddressMutation.isLoading ? "Saving..." : "Save"}
+          {addAddressMutation.isPending ? "Saving..." : "Save"}
         </button>
       </form>
 
@@ -90,10 +113,29 @@ const Checkout = () => {
         <div>
           <h2 className="font-bold mb-2">Select Address</h2>
           {isLoading ? (
-            <p>Loading...</p>
+            <StatusPanel
+              type="loading"
+              title="Loading Addresses"
+              message="Fetching your saved delivery addresses."
+              className="py-10"
+            />
+          ) : isError ? (
+            <StatusPanel
+              type="error"
+              title="Failed To Load Addresses"
+              message="Please refresh the page and try again."
+              className="py-10"
+            />
+          ) : addresses.length === 0 ? (
+            <StatusPanel
+              type="empty"
+              title="No Saved Addresses"
+              message="Save a delivery address first, then select it for checkout."
+              className="py-10"
+            />
           ) : (
             <div className="space-y-3">
-              {addresses?.map((addr) => (
+              {addresses.map((addr) => (
                 <div
                   key={addr.id}
                   onClick={() => setSelectedAddress(addr.id)}
@@ -106,11 +148,12 @@ const Checkout = () => {
                   </div>
                   <button
                     type="button"
+                    disabled={deleteAddressMutation.isPending}
                     onClick={(e) => {
                       e.stopPropagation();
                       deleteAddressMutation.mutate(addr.id);
                     }}
-                    className="text-red-500 hover:text-red-700"
+                    className="text-red-500 hover:text-red-700 disabled:opacity-50"
                   >
                     <Trash2 className="w-5 h-5" />
                   </button>
@@ -129,7 +172,7 @@ const Checkout = () => {
               Cash on Delivery
             </label>
             <label className={`border border-gray-300 px-4 py-2 rounded-full cursor-pointer ${paymentMethod === "online" ? "border-green-500" : ""}`}>
-              <input type="radio" name="payment" value="razorpay" checked={paymentMethod === "razorpay"} onChange={() => setPaymentMethod("online")} className="hidden" />
+              <input type="radio" name="payment" value="online" checked={paymentMethod === "online"} onChange={() => setPaymentMethod("online")} className="hidden" />
               Razorpay
             </label>
           </div>
@@ -137,10 +180,18 @@ const Checkout = () => {
 
         <button
           onClick={handlePlaceOrder}
-          disabled={placeOrderMutation.isPending}
-          className="bg-black text-white px-4 py-2 rounded-full w-full hover:bg-green-600 cursor-pointer"
+          disabled={cannotPlaceOrder}
+          className={`px-4 py-2 rounded-full w-full cursor-pointer ${
+            cannotPlaceOrder
+              ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+              : "bg-black text-white hover:bg-green-600"
+          }`}
         >
-          {placeOrderMutation.isPending ? "Placing Order..." : "Place Order"}
+          {placeOrderMutation.isPending
+            ? "Placing Order..."
+            : selectedAddress
+              ? "Place Order"
+              : "Select Address To Place Order"}
         </button>
       </div>
 

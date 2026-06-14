@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "../lib/axios";
+import API from "../lib/axios";
+import { queryKeys } from "@/lib/queryKeys";
 
 const fetchProducts = async ({ queryKey }) => {
   const [
@@ -7,7 +8,7 @@ const fetchProducts = async ({ queryKey }) => {
     { search, category, in_stock, out_of_stock, is_best_selling, size, page },
   ] = queryKey;
 
-  const res = await axios.get(`/products`, {
+  const res = await API.get(`/products`, {
     params: {
       search,
       category,
@@ -30,11 +31,10 @@ export default function useFilteredProducts({
   size = "",
   page = 1,
 }) {
+  const params = { search, category, in_stock, out_of_stock, is_best_selling, size, page };
+
   return useQuery({
-    queryKey: [
-      "products",
-      { search, category, in_stock, out_of_stock, is_best_selling, size, page },
-    ],
+    queryKey: queryKeys.products(params),
     queryFn: fetchProducts,
     keepPreviousData: true,
   });

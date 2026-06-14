@@ -31,7 +31,9 @@ export default function ProductCard({ product }) {
     addToCart(variant);
   };
 
-  const handleToggleWishlist = (variantId) => {
+  const handleToggleWishlist = (event, variantId) => {
+    event.stopPropagation();
+
     if (!user || !token) {
       toast.error("Please login to use wishlist");
       navigate("/login");
@@ -53,7 +55,16 @@ export default function ProductCard({ product }) {
         return (
           <div
             key={variant.id}
-            className="relative group rounded overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 bg-white"
+            onClick={() => handleView(variant.id)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                handleView(variant.id);
+              }
+            }}
+            className="relative group rounded overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-black"
           >
             {/* Image */}
             <div className="overflow-hidden">
@@ -66,7 +77,7 @@ export default function ProductCard({ product }) {
 
             {/* Wishlist Heart - Always visible on mobile, hover effect on desktop */}
             <div
-              onClick={() => handleToggleWishlist(variant.id)}
+              onClick={(event) => handleToggleWishlist(event, variant.id)}
               className="absolute top-2 right-2 opacity-100 sm:opacity-0 sm:translate-y-2 sm:group-hover:opacity-100 sm:group-hover:translate-y-0 transition-all duration-300 ease-in-out"
             >
               <Heart
@@ -93,7 +104,10 @@ export default function ProductCard({ product }) {
             <div className="absolute bottom-28 sm:bottom-24 md:bottom-36 lg:bottom-24 w-full flex justify-center gap-3 sm:gap-4 opacity-100 sm:opacity-0 sm:translate-y-4 sm:group-hover:opacity-100 sm:group-hover:translate-y-0 transition-all duration-300 ease-in-out">
               <div className="relative">
                 <button
-                  onClick={() => handleAddToCart(variant)}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleAddToCart(variant);
+                  }}
                   className={`text-xs sm:text-sm font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-lg transition-all duration-200 cursor-pointer ${!user || !token
                     ? "bg-gray-200 text-gray-500 cursor-not-allowed active:scale-95"
                     : "bg-green-600 text-white hover:bg-green-700 hover:scale-105 active:scale-95"
@@ -111,7 +125,10 @@ export default function ProductCard({ product }) {
                 )}
               </div>
               <button
-                onClick={() => handleView(variant.id)}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  handleView(variant.id);
+                }}
                 className="text-xs sm:text-sm font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-lg bg-white text-gray-800 hover:bg-gray-100 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer border border-gray-200"
               >
                 View
@@ -123,7 +140,7 @@ export default function ProductCard({ product }) {
               <h3 className="mt-2 font-medium text-[12px] sm:text-sm">{variant.name}</h3>
               <div className="flex items-center justify-between text-sm mt-1">
                 <p className="text-gray-600">
-                  ₹{variant.sizeOptions?.[0]?.price || "N/A"}
+                  Rs. {variant.sizeOptions?.[0]?.price || "N/A"}
                 </p>
                 <div className="flex gap-1 items-center text-yellow-500">
                   <Star size={16} fill="currentColor" />

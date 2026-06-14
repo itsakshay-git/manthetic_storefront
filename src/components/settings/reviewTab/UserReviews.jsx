@@ -4,9 +4,11 @@ import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "../../../lib/axios";
+import API from "../../../lib/axios";
 import toast from "react-hot-toast";
 import { Trash2 } from "lucide-react";
+import { queryKeys } from "@/lib/queryKeys";
+import { displayErrorMessages } from "@/utils/errorHandler";
 
 // Zod schema for one review
 const singleReviewSchema = z.object({
@@ -22,18 +24,18 @@ const reviewsSchema = z.object({
 
 // Fetch reviews
 const fetchUserReviews = async (userId) => {
-  const { data } = await axios.get(`/reviews/user/${userId}`);
+  const { data } = await API.get(`/reviews/user/${userId}`);
   return Array.isArray(data) ? data : data?.reviews ?? [];
 };
 
 const deleteUserReview = async (reviewId) => {
-  const { data } = await axios.delete(`/reviews/delete/${reviewId}`);
+  const { data } = await API.delete(`/reviews/delete/${reviewId}`);
   return data;
 };
 
 // Update review API
 const updateUserReview = async ({ reviewId, rating, comment }) => {
-  const { data } = await axios.put(`/reviews/${reviewId}`, {
+  const { data } = await API.put(`/reviews/${reviewId}`, {
     rating,
     comment,
   });
@@ -46,30 +48,30 @@ const UserReviews = () => {
 
   // Fetch user reviews
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["userReviews", user?.id],
+    queryKey: queryKeys.userReviews(user?.id),
     queryFn: () => fetchUserReviews(user.id),
     enabled: !!user?.id,
   });
 
-  const reviewsData = Array.isArray(data) ? data : [];
+  const reviewsData = React.useMemo(() => Array.isArray(data) ? data : [], [data]);
 
   // Mutation for updating single review
   const mutation = useMutation({
     mutationFn: updateUserReview,
     onSuccess: () => {
       toast.success("Review updated successfully");
-      queryClient.invalidateQueries({ queryKey: ["userReviews", user.id] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.userReviews(user.id) });
     },
-    onError: () => toast.error("Failed to update review"),
+    onError: (err) => displayErrorMessages(err, "Failed to update review", toast.error),
   });
 
   const deleteMutation = useMutation({
   mutationFn: deleteUserReview,
   onSuccess: () => {
     toast.success("Review deleted successfully");
-    queryClient.invalidateQueries({ queryKey: ["userReviews", user.id] });
+    queryClient.invalidateQueries({ queryKey: queryKeys.userReviews(user.id) });
   },
-  onError: () => toast.error("Failed to delete review"),
+  onError: (err) => displayErrorMessages(err, "Failed to delete review", toast.error),
 });
 
   const { control, reset, getValues, formState: { errors } } = useForm({

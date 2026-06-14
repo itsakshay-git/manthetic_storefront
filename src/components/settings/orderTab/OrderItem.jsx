@@ -19,7 +19,7 @@ const OrderItem = ({ item }) => {
       <div className="flex gap-4 text-sm mt-2 md:mt-0">
         <span>Size: {item.size}</span>
         <span>Qty: {item.quantity}</span>
-        <span>Price: ₹{item.price}</span>
+        <span>Price: Rs. {item.price}</span>
       </div>
     </div>
   );

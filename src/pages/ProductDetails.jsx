@@ -4,11 +4,14 @@ import { useVariant } from "@/hooks/useVariant";
 import { Star, Heart } from "lucide-react";
 import ProductCard from "@/components/Products/ProductCard";
 import toast from "react-hot-toast";
-import axios from "axios";
+import API from "@/lib/axios";
 import { useQueryClient } from "@tanstack/react-query";
 import useWishlist from "@/hooks/useWishlist";
 import { useRelatedProducts } from "@/hooks/useRelatedProducts";
 import { displayErrorMessages } from "@/utils/errorHandler";
+import { queryKeys } from "@/lib/queryKeys";
+import { storageKeys } from "@/lib/storageKeys";
+import StatusPanel from "@/components/common/StatusPanel";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -21,7 +24,7 @@ const ProductDetails = () => {
   const [selectedImage, setSelectedImage] = useState("");
   const [quantity, setQuantity] = useState(1);
 
-  const token = localStorage.getItem("manthetic_token");
+  const token = localStorage.getItem(storageKeys.authToken);
 
   // ✅ Wishlist hook
   const { data: wishlistData, addToWishlist, removeFromWishlist } = useWishlist(token);
@@ -44,8 +47,29 @@ const ProductDetails = () => {
     }
   }, [data?.size_options, selectedSize]);
 
-  if (isLoading) return <div className="p-10">Loading...</div>;
-  if (error) return <div className="p-10 text-red-500">Error fetching variant</div>;
+  if (isLoading) {
+    return (
+      <div className="px-6 md:px-32 py-12">
+        <StatusPanel
+          type="loading"
+          title="Loading Product"
+          message="Fetching product details."
+        />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="px-6 md:px-32 py-12">
+        <StatusPanel
+          type="error"
+          title="Failed To Load Product"
+          message="Please refresh the page or try another product."
+        />
+      </div>
+    );
+  }
 
   const variant = data ?? {};
   const {
@@ -58,6 +82,7 @@ const ProductDetails = () => {
 
   const currentSize =
     sizeOptions.find((s) => s.size === selectedSize) || sizeOptions[0];
+  const hasSizeOptions = sizeOptions.length > 0;
 
   const isWishlisted = wishlistItems.includes(variant.id);
 
@@ -65,8 +90,8 @@ const ProductDetails = () => {
     if (!token) return toast.error("You must be logged in to add to cart.");
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/cart",
+      await API.post(
+        "/cart",
         {
           variant_id: variant.id,
           quantity,
@@ -82,7 +107,7 @@ const ProductDetails = () => {
       );
 
       toast.success("Added to cart successfully");
-      queryClient.invalidateQueries(["cart"]);
+      queryClient.invalidateQueries({ queryKey: queryKeys.cartRoot() });
     } catch (err) {
       displayErrorMessages(err, "Failed to add to cart", toast.error);
     }
@@ -141,7 +166,7 @@ const ProductDetails = () => {
               <h1 className="text-4xl font-bold mb-6">{name}</h1>
               <div className="flex items-center gap-2 mt-2">
                 <p className="text-xl font-semibold text-black">
-                  ₹{currentSize.price}
+                  Rs. {currentSize?.price ?? 0}
                 </p>
                 <div className="flex items-center text-yellow-500">
                   <Star size={18} fill="currentColor" />
@@ -152,23 +177,27 @@ const ProductDetails = () => {
               </div>
             </div>
 
-            <p className="text-sm text-gray-600">Stock: {currentSize.stock}</p>
+            <p className="text-sm text-gray-600">Stock: {currentSize?.stock ?? 0}</p>
 
             {/* Size Selector */}
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-gray-700 text-sm">Select Size:</span>
-              {sizeOptions.map((opt) => (
-                <button
-                  key={opt.size}
-                  onClick={() => setSelectedSize(opt.size)}
-                  className={`px-4 py-1 border rounded-full text-sm ${selectedSize === opt.size
-                    ? "bg-black text-white border-black"
-                    : "text-gray-700"
-                    }`}
-                >
-                  {opt.size}
-                </button>
-              ))}
+              {hasSizeOptions ? (
+                sizeOptions.map((opt) => (
+                  <button
+                    key={opt.size}
+                    onClick={() => setSelectedSize(opt.size)}
+                    className={`px-4 py-1 border rounded-full text-sm ${selectedSize === opt.size
+                      ? "bg-black text-white border-black"
+                      : "text-gray-700"
+                      }`}
+                  >
+                    {opt.size}
+                  </button>
+                ))
+              ) : (
+                <span className="text-sm text-gray-500">No sizes available</span>
+              )}
             </div>
 
             {/* Buttons */}
@@ -192,7 +221,12 @@ const ProductDetails = () => {
               <div className="flex gap-4">
                 <button
                   onClick={handleAddToCart}
-                  className="bg-black text-white text-[14px] md:text-[16px] px-3 py-2 md:px-6 md:py-2 rounded-full"
+                  disabled={!hasSizeOptions}
+                  className={`text-[14px] md:text-[16px] px-3 py-2 md:px-6 md:py-2 rounded-full ${
+                    hasSizeOptions
+                      ? "bg-black text-white"
+                      : "bg-gray-300 text-gray-600 cursor-not-allowed"
+                  }`}
                 >
                   Add to Cart
                 </button>
@@ -284,7 +318,7 @@ const ProductDetails = () => {
                       onClick={() => navigate(`/reviews/${variant.id}`)} // ✅ pass variant id
                       className="text-sm bg-green-600 px-4 py-2 rounded-full text-white mb-5 cursor-pointer"
                     >
-                      View More Reviews →
+                      View More Reviews {"->"}
                     </button>
                   </div>
                 )}

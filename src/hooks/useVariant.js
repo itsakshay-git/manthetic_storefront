@@ -1,14 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "../lib/axios";
+import API from "../lib/axios";
+import { queryKeys } from "@/lib/queryKeys";
 
 const fetchVariantById = async (id) => {
-  const { data } = await axios.get(`/variants/variant/${id}`);
+  const { data } = await API.get(`/variants/variant/${id}`);
   return data;
 };
 
 export const useVariant = (id) => {
   return useQuery({
-    queryKey: ["variant", id],
+    queryKey: queryKeys.variant(id),
     queryFn: () => fetchVariantById(id),
     enabled: !!id,
   });

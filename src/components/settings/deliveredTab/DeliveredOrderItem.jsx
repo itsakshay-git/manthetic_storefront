@@ -15,7 +15,7 @@ const DeliveredOrderItem = ({ item, reviewForm, handleChangeReview, handleSubmit
             <div className="flex gap-3 text-sm mt-1">
               <span>Size: {item.size}</span>
               <span>Qty: {item.quantity}</span>
-              <span>Price: ₹{item.price}</span>
+              <span>Price: Rs. {item.price}</span>
             </div>
           </div>
         </div>

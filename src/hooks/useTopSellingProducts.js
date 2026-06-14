@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "@/lib/axios";
+import API from "@/lib/axios";
+import { queryKeys } from "@/lib/queryKeys";
 
 const useTopSellingProducts = () => {
   return useQuery({
-    queryKey: ["products", { is_best_selling: true }],
+    queryKey: queryKeys.products({ is_best_selling: true }),
     queryFn: async () => {
-      const res = await axios.get("/products", {
+      const res = await API.get("/products", {
         params: { is_best_selling: true },
       });
       return res.data;

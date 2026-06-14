@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import DeliveredOrderItem from "../deliveredTab/DeliveredOrderItem";
 
 const DeliveredOrders = ({
@@ -13,6 +14,8 @@ const DeliveredOrders = ({
   isFetchingNextDelivered,
   hasNextDelivered,
 }) => {
+  const navigate = useNavigate();
+
   if (isLoadingDelivered) return (
     <div className="flex flex-col items-center justify-center py-20 gap-6">
       <div className="w-12 h-12 border-4 border-gray-300 border-t-green-500 rounded-full animate-spin"></div>
@@ -52,7 +55,7 @@ const DeliveredOrders = ({
           You don't have any delivered orders yet. Once your orders are delivered, you'll be able to review them here.
         </p>
         <button
-          onClick={() => window.location.href = '/products'}
+          onClick={() => navigate('/products')}
           className="mt-4 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
         >
           Browse Products
@@ -91,7 +94,7 @@ const DeliveredOrders = ({
             </div>
             <div>
               <p className="text-sm text-gray-600">Total Amount</p>
-              <p>₹{order.total_amount}</p>
+              <p>Rs. {order.total_amount}</p>
             </div>
             <div>
               <p className="text-sm text-gray-600">Items</p>

@@ -3,12 +3,23 @@ import useCart from "../hooks/useCart";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Trash2 } from "lucide-react";
+import StatusPanel from "@/components/common/StatusPanel";
 
 export default function Cart() {
   const token = useSelector((state) => state.auth.token);
   const { cart, loading, updateQuantity, removeItem } = useCart(token);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) {
+    return (
+      <div className="max-w-6xl mx-auto mt-16 p-2">
+        <StatusPanel
+          type="loading"
+          title="Loading Cart"
+          message="Getting your cart items ready."
+        />
+      </div>
+    );
+  }
 
   const subtotal = cart.reduce(
     (sum, item) => sum + Number(item.selected_price) * Number(item.quantity || 0),
@@ -19,27 +30,29 @@ export default function Cart() {
 
   return (
     <div className="max-w-6xl mx-auto mt-16 p-2 grid grid-cols-1 lg:grid-cols-3 gap-8">
-      {/* Left: Cart Items */}
       <div className="lg:col-span-2 bg-gray-300 border border-gray-100 rounded-2xl p-4">
         <h2 className="text-xl font-semibold mb-4">Cart</h2>
 
         {cart.length === 0 ? (
-          <div className="text-center text-gray-500 py-10">
-            Your cart is empty 🛒
-            <Link
-              to="/"
-              className="block mt-4 bg-black px-4 py-2 rounded-full text-white"
-            >
-              Continue shopping
-            </Link>
-          </div>
+          <StatusPanel
+            type="empty"
+            title="Your Cart Is Empty"
+            message="Add products to your cart before checkout."
+            action={(
+              <Link
+                to="/products"
+                className="inline-flex bg-black px-5 py-2 rounded-full text-white"
+              >
+                Continue Shopping
+              </Link>
+            )}
+          />
         ) : (
           cart.map((item) => (
             <div
               key={item.id}
               className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white border-b border-gray-400 px-4 py-4 mb-2 rounded-2xl gap-4"
             >
-              {/* Product Info */}
               <div className="flex items-start sm:items-center gap-4 w-full sm:w-auto">
                 <img
                   src={item.images[0]}
@@ -50,11 +63,10 @@ export default function Cart() {
                   <h3 className="font-medium">{item.product_title}</h3>
                   <p className="text-gray-500">{item.variant_name}</p>
                   <p className="text-gray-500">Size: {item.selected_size}</p>
-                  <p className="text-sm font-semibold">₹{item.selected_price}</p>
+                  <p className="text-sm font-semibold">Rs. {item.selected_price}</p>
                 </div>
               </div>
 
-              {/* Quantity + Actions */}
               <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
                 <div className="flex items-center gap-2">
                   <button
@@ -78,6 +90,7 @@ export default function Cart() {
                 <button
                   onClick={() => removeItem(item.id)}
                   className="text-red-500 ml-2 sm:ml-4 cursor-pointer"
+                  aria-label={`Remove ${item.product_title} from cart`}
                 >
                   <Trash2 className="w-5 h-5" />
                 </button>
@@ -87,21 +100,20 @@ export default function Cart() {
         )}
       </div>
 
-      {/* Right: Order Summary */}
       <div className="bg-white">
         <div className="border border-gray-300 rounded-2xl p-4">
           <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
           <div className="flex justify-between py-2">
             <span>Subtotal</span>
-            <span>₹{subtotal}</span>
+            <span>Rs. {subtotal}</span>
           </div>
           <div className="flex justify-between py-2">
             <span>Shipping</span>
-            <span>₹{shipping}</span>
+            <span>Rs. {shipping}</span>
           </div>
           <div className="flex justify-between font-bold py-2 border-t border-t-gray-300 mt-2">
             <span>Total</span>
-            <span>₹{total}</span>
+            <span>Rs. {total}</span>
           </div>
           <Link to={cart.length > 0 ? "/checkout" : "#"}>
             <button

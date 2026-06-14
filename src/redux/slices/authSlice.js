@@ -1,9 +1,10 @@
 // redux/slices/authSlice.js
 import { createSlice } from "@reduxjs/toolkit";
+import { storageKeys } from "@/lib/storageKeys";
 
 const initialState = {
-  token: localStorage.getItem("manthetic_token") || null,
-  user: JSON.parse(localStorage.getItem("user") || "null"),
+  token: localStorage.getItem(storageKeys.authToken) || null,
+  user: JSON.parse(localStorage.getItem(storageKeys.user) || "null"),
 };
 
 const authSlice = createSlice({
@@ -15,24 +16,24 @@ const authSlice = createSlice({
       state.token = token;
       state.user = user;
       // persist
-      localStorage.setItem("manthetic_token", token);
-      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem(storageKeys.authToken, token);
+      localStorage.setItem(storageKeys.user, JSON.stringify(user));
     },
     clearCredentials: (state) => {
       state.token = null;
       state.user = null;
-      localStorage.removeItem("manthetic_token");
-      localStorage.removeItem("user");
+      localStorage.removeItem(storageKeys.authToken);
+      localStorage.removeItem(storageKeys.user);
     },
     updateUser: (state, action) => {
       state.user = { ...state.user, ...action.payload };
-      localStorage.setItem("user", JSON.stringify(state.user));
+      localStorage.setItem(storageKeys.user, JSON.stringify(state.user));
     },
     logout: (state) => {
       state.user = null;
       state.token = null;
-      localStorage.removeItem("manthetic_token");
-      localStorage.removeItem("user");
+      localStorage.removeItem(storageKeys.authToken);
+      localStorage.removeItem(storageKeys.user);
     },
   },
 });

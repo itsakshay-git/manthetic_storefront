@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { storageKeys } from "@/lib/storageKeys";
 
-const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
+const savedCart = JSON.parse(localStorage.getItem(storageKeys.cart)) || [];
 
 const cartSlice = createSlice({
   name: "cart",
@@ -12,12 +13,12 @@ const cartSlice = createSlice({
     setCart: (state, action) => {
       state.items = action.payload;
       state.count = action.payload.reduce((sum, item) => sum + item.quantity, 0);
-      localStorage.setItem("cart", JSON.stringify(state.items));
+      localStorage.setItem(storageKeys.cart, JSON.stringify(state.items));
     },
     clearCart: (state) => {
       state.items = [];
       state.count = 0;
-      localStorage.removeItem("cart");
+      localStorage.removeItem(storageKeys.cart);
     }
   }
 });

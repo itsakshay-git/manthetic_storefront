@@ -1,8 +1,7 @@
-import React, { useState, useRef, useCallback, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { useInfiniteOrders } from "@/hooks/useOrders";
-import dayjs from "dayjs";
-import userImage from "../assets/images/userImage.png";
 import { useInView } from "react-intersection-observer";
 import { useUpdatePassword } from "@/hooks/useUpdatePassword";
 import { useForm } from "react-hook-form";
@@ -14,13 +13,15 @@ import Orders from "@/components/settings/orderTab/Orders";
 import ProfileCard from "@/components/settings/profileCard/ProfileCard";
 import ChangePassword from "@/components/settings/changePassword/ChangePassword";
 import UserReviews from "@/components/settings/reviewTab/UserReviews";
+import StatusPanel from "@/components/common/StatusPanel";
 
 const Settings = () => {
   const { user } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("orders");
   const [reviewForm, setReviewForm] = useState({}); // { [variantId]: { rating, comment } }
 
-  const { register, handleSubmit, formState: { errors }, reset } = useForm();
+  const { reset } = useForm();
   const addReview = useAddReview();
   const updatePassword = useUpdatePassword();
 
@@ -85,38 +86,6 @@ const Settings = () => {
     });
   };
 
-  if (isLoading) return (
-    <div className="max-w-5xl mx-auto border border-gray-300 shadow p-6 mt-5 rounded-2xl">
-      <div className="flex flex-col items-center justify-center py-20 gap-6">
-        <div className="w-12 h-12 border-4 border-gray-300 border-t-green-500 rounded-full animate-spin"></div>
-        <p className="text-gray-600">Loading your orders...</p>
-      </div>
-    </div>
-  );
-
-  if (isError) return (
-    <div className="max-w-5xl mx-auto border border-gray-300 shadow p-6 mt-5 rounded-2xl">
-      <div className="flex flex-col items-center justify-center py-20 text-center">
-        <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mb-4">
-          <svg className="w-12 h-12 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
-          </svg>
-        </div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Failed to Load Orders</h3>
-        <p className="text-gray-500 max-w-md mb-4">
-          We encountered an error while loading your orders. Please try refreshing the page or contact support if the issue persists.
-        </p>
-        <button
-          onClick={() => window.location.reload()}
-          className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-        >
-          Refresh Page
-        </button>
-      </div>
-    </div>
-  );
-
-
   return (
     <div className="max-w-5xl mx-auto border border-gray-300 shadow p-6 mt-5 rounded-2xl space-y-6">
       {/* Profile Card */}
@@ -168,24 +137,40 @@ const Settings = () => {
       {/* Orders Tab */}
       {activeTab === "orders" && (
         <>
-          {orders.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-              <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">No Orders Yet</h3>
-              <p className="text-gray-500 max-w-md mb-4">
-                You haven't placed any orders yet. Start shopping to see your order history here.
-              </p>
-              <button
-                onClick={() => window.location.href = '/'}
-                className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-              >
-                Start Shopping
-              </button>
-            </div>
+          {isLoading ? (
+            <StatusPanel
+              type="loading"
+              title="Loading Orders"
+              message="Fetching your order history."
+            />
+          ) : isError ? (
+            <StatusPanel
+              type="error"
+              title="Failed To Load Orders"
+              message="Please refresh the page and try again."
+              action={(
+                <button
+                  onClick={() => window.location.reload()}
+                  className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                >
+                  Refresh Page
+                </button>
+              )}
+            />
+          ) : orders.length === 0 ? (
+            <StatusPanel
+              type="empty"
+              title="No Orders Yet"
+              message="Start shopping to see your order history here."
+              action={(
+                <button
+                  onClick={() => navigate('/products')}
+                  className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                >
+                  Start Shopping
+                </button>
+              )}
+            />
           ) : (
             <Orders
               orders={orders}
@@ -199,24 +184,40 @@ const Settings = () => {
 
       {activeTab === "delivered" && (
         <>
-          {deliveredOrders.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-              <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">No Delivered Orders Yet</h3>
-              <p className="text-gray-500 max-w-md mb-4">
-                You don't have any delivered orders yet. Once your orders are delivered, you'll be able to review them here.
-              </p>
-              <button
-                onClick={() => window.location.href = '/products'}
-                className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-              >
-                Browse Products
-              </button>
-            </div>
+          {isLoadingDelivered ? (
+            <StatusPanel
+              type="loading"
+              title="Loading Delivered Orders"
+              message="Fetching your delivered order history."
+            />
+          ) : isErrorDelivered ? (
+            <StatusPanel
+              type="error"
+              title="Failed To Load Delivered Orders"
+              message="Please refresh the page and try again."
+              action={(
+                <button
+                  onClick={() => window.location.reload()}
+                  className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                >
+                  Refresh Page
+                </button>
+              )}
+            />
+          ) : deliveredOrders.length === 0 ? (
+            <StatusPanel
+              type="empty"
+              title="No Delivered Orders Yet"
+              message="Once your orders are delivered, you will be able to review them here."
+              action={(
+                <button
+                  onClick={() => navigate('/products')}
+                  className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                >
+                  Browse Products
+                </button>
+              )}
+            />
           ) : (
             <DeliveredOrders
               deliveredOrders={deliveredOrders}

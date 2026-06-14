@@ -2,19 +2,19 @@ import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-q
 import API from "@/lib/axios";
 import toast from "react-hot-toast";
 import { displayErrorMessages } from "@/utils/errorHandler";
+import { queryKeys } from "@/lib/queryKeys";
 
 const useWishlist = (token, limit = 12) => {
   const queryClient = useQueryClient();
 
   // ✅ Fetch wishlist
   const wishlistQuery = useInfiniteQuery({
-    queryKey: ["wishlist", token],
+    queryKey: queryKeys.wishlist(token),
     queryFn: async ({ pageParam = 1 }) => {
       if (!token) throw new Error("No token provided");
       const res = await API.get(`/wishlist?page=${pageParam}&limit=${limit}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log(res.data);
       return res.data; // { products, totalCount, page, totalPages }
     },
     getNextPageParam: (lastPage) => {
@@ -35,7 +35,7 @@ const useWishlist = (token, limit = 12) => {
     },
     onSuccess: () => {
       toast.success("Added to wishlist");
-      queryClient.invalidateQueries(["wishlist", token]);
+      queryClient.invalidateQueries({ queryKey: queryKeys.wishlist(token) });
     },
     onError: (err) => {
       displayErrorMessages(err, "Failed to add to wishlist", toast.error);
@@ -52,7 +52,7 @@ const useWishlist = (token, limit = 12) => {
     },
     onSuccess: () => {
       toast.success("Removed from wishlist");
-      queryClient.invalidateQueries(["wishlist", token]);
+      queryClient.invalidateQueries({ queryKey: queryKeys.wishlist(token) });
     },
     onError: (err) => {
       displayErrorMessages(err, "Failed to remove from wishlist", toast.error);

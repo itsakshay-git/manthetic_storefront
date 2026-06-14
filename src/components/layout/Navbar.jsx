@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useCart from "@/hooks/useCart";
 import { logout } from "@/redux/slices/authSlice";
+import { storageKeys } from "@/lib/storageKeys";
 
 const Navbar = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -17,7 +18,7 @@ const Navbar = () => {
   const cartCount = useSelector((state) => state.cart.count);
 
   // Load cart data
-  const token = localStorage.getItem("manthetic_token");
+  const token = localStorage.getItem(storageKeys.authToken);
   useCart(token);
 
   const handleSearch = (e) => {

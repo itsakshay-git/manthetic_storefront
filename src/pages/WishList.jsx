@@ -2,9 +2,12 @@ import React, { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import useWishlist from "@/hooks/useWishlist";
 import ProductCard from "@/components/Products/ProductCard";
+import { storageKeys } from "@/lib/storageKeys";
+import StatusPanel from "@/components/common/StatusPanel";
+import { Link } from "react-router-dom";
 
 const WishList = () => {
-  const token = localStorage.getItem("manthetic_token");
+  const token = localStorage.getItem(storageKeys.authToken);
   const {
     data,
     isLoading,
@@ -27,11 +30,45 @@ const WishList = () => {
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   if (!token) {
-    return <p className="text-center mt-10">Please log in to view your wishlist.</p>;
+    return (
+      <div className="px-6 md:px-32 py-8">
+        <StatusPanel
+          type="empty"
+          title="Login Required"
+          message="Please log in to view your wishlist."
+          action={(
+            <Link to="/login" className="inline-flex bg-black px-5 py-2 rounded-full text-white">
+              Go To Login
+            </Link>
+          )}
+        />
+      </div>
+    );
   }
 
-  if (isLoading) return <p className="text-center mt-10">Loading wishlist...</p>;
-  if (isError) return <p className="text-center mt-10 text-red-500">Error: {error.message}</p>;
+  if (isLoading) {
+    return (
+      <div className="px-6 md:px-32 py-8">
+        <StatusPanel
+          type="loading"
+          title="Loading Wishlist"
+          message="Fetching your saved products."
+        />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="px-6 md:px-32 py-8">
+        <StatusPanel
+          type="error"
+          title="Failed To Load Wishlist"
+          message={error?.message || "Please refresh the page and try again."}
+        />
+      </div>
+    );
+  }
 
   const products = data?.pages.flatMap((page) => page.products) || [];
 
@@ -40,7 +77,16 @@ const WishList = () => {
       <h1 className="text-2xl font-bold mb-6">My Wishlist</h1>
 
       {products.length === 0 ? (
-        <p className="text-gray-500">Your wishlist is empty.</p>
+        <StatusPanel
+          type="empty"
+          title="Your Wishlist Is Empty"
+          message="Save products you like and they will appear here."
+          action={(
+            <Link to="/products" className="inline-flex bg-black px-5 py-2 rounded-full text-white">
+              Browse Products
+            </Link>
+          )}
+        />
       ) : (
         <>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">

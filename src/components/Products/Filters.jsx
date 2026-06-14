@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { useCategories } from "@/hooks/useCategories";
 import { filterSchema } from "@/lib/validation/filterSchema";
 import toast from "react-hot-toast";
+import { RotateCcw, SlidersHorizontal } from "lucide-react";
 
-export default function Filter({ onApply, onReset, className = ""}) {
+export default function Filter({ onApply, onReset, className = "" }) {
   const [form, setForm] = useState({
     search: "",
     category: "",
@@ -28,8 +29,8 @@ export default function Filter({ onApply, onReset, className = ""}) {
       toast.error("Invalid filter values.");
       return;
     }
-    onApply(parsed.data); // pass only validated data
-     toast.success("Filters applied successfully!");
+    onApply(parsed.data);
+    toast.success("Filters applied successfully!");
   };
 
   const handleReset = () => {
@@ -45,101 +46,127 @@ export default function Filter({ onApply, onReset, className = ""}) {
   };
 
   return (
-    <div className={`p-4 border border-gray-300 rounded-2xl w-full max-w-[250px] ${className}`}>
-      <h2 className="font-semibold mb-3">Filters</h2>
-
-      {/* Search */}
-      <div className="mb-2">
-        <label className="block font-medium mb-1">Search</label>
-        <input
-          name="search"
-          value={form.search}
-          onChange={handleChange}
-          className="border border-gray-300 w-full p-1 rounded"
-        />
+    <div className={`w-full rounded-2xl border border-gray-200 bg-white p-4 shadow-sm ${className}`}>
+      <div className="mb-5 flex items-center justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-gray-400">
+            Refine
+          </p>
+          <h2 className="mt-1 text-lg font-semibold text-gray-900">Filters</h2>
+        </div>
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-50 text-gray-600">
+          <SlidersHorizontal className="h-5 w-5" />
+        </div>
       </div>
 
-      {/* Stock */}
-      <div className="mb-2">
-        <label className="block font-medium mb-1">Stock</label>
-        {["", "in", "out"].map((option) => (
-          <label key={option} className="block">
-            <input
-              type="radio"
-              name="stock"
-              value={option}
-              checked={form.stock === option}
-              onChange={handleChange}
-            />{" "}
-            {option === "" ? "All" : option === "in" ? "In Stock" : "Out of Stock"}
-          </label>
-        ))}
-      </div>
+      <div className="space-y-5">
+        <Field label="Search">
+          <input
+            name="search"
+            value={form.search}
+            onChange={handleChange}
+            placeholder="Search shirts, jeans..."
+            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none transition focus:border-gray-500 focus:ring-2 focus:ring-gray-100"
+          />
+        </Field>
 
-      {/* Size */}
-      <div className="mb-2">
-        <label className="block font-medium mb-1">Size</label>
-        <select
-          name="size"
-          value={form.size}
-          onChange={handleChange}
-          className="w-full border border-gray-300 p-1 rounded"
-        >
-          <option value="">All</option>
-          <option value="S">Small</option>
-          <option value="M">Medium</option>
-          <option value="L">Large</option>
-          <option value="XL">Extra Large</option>
-        </select>
-      </div>
+        <Field label="Stock">
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              ["", "All"],
+              ["in", "In"],
+              ["out", "Out"],
+            ].map(([value, label]) => (
+              <label
+                key={value}
+                className={`flex cursor-pointer items-center justify-center rounded-full border px-3 py-2 text-xs font-medium transition ${
+                  form.stock === value
+                    ? "border-green-500 bg-green-50 text-green-700"
+                    : "border-gray-200 text-gray-600 hover:border-gray-300"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="stock"
+                  value={value}
+                  checked={form.stock === value}
+                  onChange={handleChange}
+                  className="sr-only"
+                />
+                {label}
+              </label>
+            ))}
+          </div>
+        </Field>
 
-      {/* Best Selling */}
-      <div className="mb-2">
-        <label className="block font-medium mb-1">
+        <Field label="Size">
+          <select
+            name="size"
+            value={form.size}
+            onChange={handleChange}
+            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none transition focus:border-gray-500 focus:ring-2 focus:ring-gray-100"
+          >
+            <option value="">All sizes</option>
+            <option value="S">Small</option>
+            <option value="M">Medium</option>
+            <option value="L">Large</option>
+            <option value="XL">Extra Large</option>
+          </select>
+        </Field>
+
+        <Field label="Category">
+          <select
+            name="category"
+            value={form.category}
+            onChange={handleChange}
+            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none transition focus:border-gray-500 focus:ring-2 focus:ring-gray-100"
+          >
+            <option value="">All categories</option>
+            {!isLoading &&
+              categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+              ))}
+          </select>
+        </Field>
+
+        <label className="flex cursor-pointer items-center justify-between rounded-lg border border-gray-200 px-3 py-3 text-sm text-gray-700">
+          <span>Best Selling Only</span>
           <input
             type="checkbox"
             name="is_best_selling"
             checked={form.is_best_selling}
             onChange={handleChange}
-          />{" "}
-          Best Selling Only
+            className="h-4 w-4 accent-green-600"
+          />
         </label>
       </div>
 
-      {/* Category */}
-      <div className="mb-2">
-        <label className="block font-medium mb-1">Category</label>
-        <select
-          name="category"
-          value={form.category}
-          onChange={handleChange}
-          className="w-full border border-gray-300 p-1 rounded"
-        >
-          <option value="">All</option>
-          {!isLoading &&
-            categories.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {cat.name}
-              </option>
-            ))}
-        </select>
-      </div>
-
-      {/* Buttons */}
-      <div className="flex gap-2 mt-3">
+      <div className="mt-6 grid grid-cols-2 gap-2">
         <button
-          className="bg-green-500 text-white px-3 py-1 rounded-full cursor-pointer"
+          type="button"
+          className="rounded-full bg-green-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-green-600"
           onClick={handleApply}
         >
           Apply
         </button>
         <button
-          className="bg-gray-200 px-3 py-1 rounded-full"
+          type="button"
+          className="inline-flex items-center justify-center gap-2 rounded-full bg-gray-100 px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-200"
           onClick={handleReset}
         >
+          <RotateCcw className="h-4 w-4" />
           Reset
         </button>
       </div>
     </div>
   );
 }
+
+const Field = ({ label, children }) => (
+  <div>
+    <label className="mb-2 block text-sm font-medium text-gray-700">{label}</label>
+    {children}
+  </div>
+);

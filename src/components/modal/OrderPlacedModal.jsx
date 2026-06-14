@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import Confetti from "react-confetti";
 import { CheckCircle } from "lucide-react";
 
+const MotionDiv = motion.div;
+
 const OrderPlacedModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
@@ -21,7 +23,7 @@ const OrderPlacedModal = ({ isOpen, onClose }) => {
           />
 
           {/* Modal Card */}
-          <motion.div
+          <MotionDiv
             initial={{ scale: 0.7, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.7, opacity: 0 }}
@@ -29,14 +31,14 @@ const OrderPlacedModal = ({ isOpen, onClose }) => {
             className="bg-white p-8 rounded-2xl text-center shadow-2xl max-w-sm w-full relative"
           >
             {/* Success Icon */}
-            <motion.div
+            <MotionDiv
               initial={{ scale: 0 }}
               animate={{ scale: [0, 1.2, 1] }}
               transition={{ duration: 0.6 }}
               className="flex justify-center mb-4"
             >
               <CheckCircle className="w-16 h-16 text-green-500" />
-            </motion.div>
+            </MotionDiv>
 
             <h2 className="text-xl font-bold mb-6">
               🎉 Order placed successfully!
@@ -54,7 +56,7 @@ const OrderPlacedModal = ({ isOpen, onClose }) => {
                 </button>
               </Link>
             </div>
-          </motion.div>
+          </MotionDiv>
         </div>
       )}
     </AnimatePresence>

@@ -102,6 +102,18 @@ const Login = () => {
                 </button>
               </span>
             </div>
+
+            <div className="mt-4 border-t border-gray-200 pt-4 text-center text-sm text-gray-500">
+              Recruiter or interviewer?{" "}
+              <a
+                href="https://manthetic-admin.vercel.app/login"
+                target="_blank"
+                rel="noreferrer"
+                className="font-medium text-black hover:underline"
+              >
+                Open admin login
+              </a>
+            </div>
           </form>
         </div>
       </div>

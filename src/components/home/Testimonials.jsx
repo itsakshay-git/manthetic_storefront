@@ -1,17 +1,17 @@
-import { Star } from "lucide-react";
+import { ArrowLeft, ArrowRight, Star } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 
-import user from "@/assets/images/User.png";
+import userImage from "@/assets/images/User.png";
 
 const testimonials = [
   {
     id: 1,
     name: "Amit Sharma",
     rating: 5,
-    image: user,
+    image: userImage,
     review:
       "Absolutely love the quality and fit! Manthetic is my go-to for trendy fashion.",
   },
@@ -19,7 +19,7 @@ const testimonials = [
     id: 2,
     name: "Ravi Patel",
     rating: 4,
-    image: user,
+    image: userImage,
     review:
       "Great service and fast delivery. The hoodie I bought is super comfy!",
   },
@@ -27,31 +27,31 @@ const testimonials = [
     id: 3,
     name: "Nikhil Verma",
     rating: 5,
-    image: user,
+    image: userImage,
     review:
       "Stylish, affordable, and top-notch material. Highly recommended.",
   },
-    {
+  {
     id: 4,
-    name: "Amit Sharma",
+    name: "Arjun Mehta",
     rating: 5,
-    image: user,
+    image: userImage,
     review:
-      "Absolutely love the quality and fit! Manthetic is my go-to for trendy fashion.",
+      "The fit is clean and the fabric feels premium. Easy to wear all week.",
   },
   {
     id: 5,
-    name: "Ravi Patel",
+    name: "Karan Shah",
     rating: 4,
-    image: user,
+    image: userImage,
     review:
-      "Great service and fast delivery. The hoodie I bought is super comfy!",
+      "Simple styles, good prices, and reliable delivery. I would order again.",
   },
   {
     id: 6,
     name: "Nikhil Verma",
     rating: 5,
-    image: user,
+    image: userImage,
     review:
       "Stylish, affordable, and top-notch material. Highly recommended.",
   },
@@ -59,15 +59,25 @@ const testimonials = [
 
 const Testimonials = () => {
   return (
-    <section className="w-full px-4 md:px-32 py-10 bg-white">
-      <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-12 text-center">
-        What Our Customers Say
-      </h2>
+    <section className="w-full px-4 md:px-32 py-14 bg-white">
+      <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
+            Reviews
+          </p>
+          <h2 className="mt-2 text-3xl md:text-5xl font-bold text-gray-900">
+            Worn And Loved
+          </h2>
+        </div>
+        <p className="max-w-md text-sm md:text-base text-gray-600">
+          A few words from customers who picked Manthetic for fit, comfort, and everyday style.
+        </p>
+      </div>
 
       <div className="relative">
         <Swiper
           modules={[Navigation]}
-          spaceBetween={30}
+          spaceBetween={24}
           slidesPerView={1}
           navigation={{
             nextEl: ".custom-swiper-button-next",
@@ -78,42 +88,58 @@ const Testimonials = () => {
             768: { slidesPerView: 2 },
             1024: { slidesPerView: 3 },
           }}
-          className="pb-20"
+          className="pb-4"
         >
-          {testimonials.map((user) => (
-            <SwiperSlide key={user.id}>
-              <div className="p-6 rounded-xl shadow-md border border-gray-300 bg-white h-full mb-24">
-                <p className="text-sm text-gray-600 leading-relaxed mb-10">
-                  {user.review}
-                </p>
-                <div className="flex items-center gap-4">
+          {testimonials.map((item) => (
+            <SwiperSlide key={item.id} className="h-auto">
+              <div className="flex h-full flex-col justify-between rounded-xl border border-gray-200 bg-gray-50 p-5 shadow-sm">
+                <div>
+                  <div className="mb-5 flex text-yellow-500">
+                    {Array.from({ length: 5 }).map((_, idx) => (
+                      <Star
+                        key={idx}
+                        size={16}
+                        className={idx < item.rating ? "fill-yellow-500" : "text-gray-300"}
+                        fill={idx < item.rating ? "currentColor" : "none"}
+                      />
+                    ))}
+                  </div>
+                  <p className="text-sm text-gray-700 leading-relaxed">
+                    {item.review}
+                  </p>
+                </div>
+                <div className="mt-8 flex items-center gap-4">
                   <img
-                    src={user.image}
-                    alt={user.name}
-                    className="w-12 h-12 rounded-full object-cover"
+                    src={item.image}
+                    alt={item.name}
+                    className="w-12 h-12 rounded-full object-cover ring-1 ring-gray-200"
                   />
                   <div>
-                    <h4 className="text-base font-semibold text-gray-800">
-                      {user.name}
+                    <h4 className="text-base font-semibold text-gray-900">
+                      {item.name}
                     </h4>
-                    <div className="flex text-yellow-500">
-                      {Array.from({ length: user.rating }).map((_, idx) => (
-                        <Star key={idx} size={16} className="fill-yellow-500" />
-                      ))}
-                    </div>
+                    <p className="text-xs text-gray-500">Verified customer</p>
                   </div>
                 </div>
               </div>
             </SwiperSlide>
           ))}
         </Swiper>
-        
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-6 mt-4 z-10">
-          <button className="custom-swiper-button-prev bg-green-400 hover:bg-black text-white px-4 py-2 rounded-full shadow">
-            &#8592;
+
+        <div className="mt-8 flex justify-center gap-4">
+          <button
+            type="button"
+            className="custom-swiper-button-prev flex h-10 w-10 items-center justify-center rounded-full bg-green-500 text-white shadow-sm transition hover:bg-black"
+            aria-label="Previous testimonial"
+          >
+            <ArrowLeft className="h-4 w-4" />
           </button>
-          <button className="custom-swiper-button-next bg-green-400 hover:bg-black text-white px-4 py-2 rounded-full shadow">
-            &#8594;
+          <button
+            type="button"
+            className="custom-swiper-button-next flex h-10 w-10 items-center justify-center rounded-full bg-green-500 text-white shadow-sm transition hover:bg-black"
+            aria-label="Next testimonial"
+          >
+            <ArrowRight className="h-4 w-4" />
           </button>
         </div>
       </div>

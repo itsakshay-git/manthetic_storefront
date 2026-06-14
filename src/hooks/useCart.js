@@ -1,14 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { setCart } from "../redux/slices/cartSlice";
 import { useDispatch } from "react-redux";
-import axios from "../lib/axios";
-import { useEffect, useRef } from "react";
+import API from "../lib/axios";
 import toast from "react-hot-toast";
 import { displayErrorMessages } from "../utils/errorHandler";
+import { queryKeys } from "@/lib/queryKeys";
 
 export const fetchCart = async (token) => {
   try {
-    const res = await axios.get("/cart", {
+    const res = await API.get("/cart", {
       headers: { Authorization: `Bearer ${token}` },
     });
     return res.data;
@@ -18,107 +18,94 @@ export const fetchCart = async (token) => {
   }
 };
 
-
 export default function useCart(token) {
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
-
+  const cartQueryKey = queryKeys.cart(token);
 
   const query = useQuery({
-    queryKey: ["cart", token],
+    queryKey: cartQueryKey,
     queryFn: async () => {
-      const res = await axios.get("/cart", {
+      const res = await API.get("/cart", {
         headers: { Authorization: `Bearer ${token}` },
       });
       dispatch(setCart(res.data));
       return res.data;
     },
     enabled: !!token,
-    onSuccess: (data) => {
-      console.log("✅ onSuccess fired with:", data);
-    },
-    onError: (err) => {
-      console.error("❌ onError fired:", err);
-    }
   });
-
 
   const { data: cart = [], isLoading } = query;
 
-
   const updateQuantityMutation = useMutation({
     mutationFn: ({ id, quantity }) =>
-      axios.put(
+      API.put(
         `/cart/${id}`,
         { quantity },
         { headers: { Authorization: `Bearer ${token}` } }
       ),
     onMutate: async ({ id, quantity }) => {
-      await queryClient.cancelQueries({ queryKey: ["cart", token] });
+      await queryClient.cancelQueries({ queryKey: cartQueryKey });
 
-      const prevCart = queryClient.getQueryData(["cart", token]) || [];
+      const prevCart = queryClient.getQueryData(cartQueryKey) || [];
       const nextCart = prevCart.map((item) =>
         item.id === id ? { ...item, quantity } : item
       );
 
-      queryClient.setQueryData(["cart", token], nextCart);
+      queryClient.setQueryData(cartQueryKey, nextCart);
       dispatch(setCart(nextCart));
-      console.log("Updating cart item:", id, "to", quantity);
       return { prevCart };
     },
-    onError: (_err, _vars, ctx) => {
+    onError: (err, _vars, ctx) => {
       if (ctx?.prevCart) {
-        queryClient.setQueryData(["cart", token], ctx.prevCart);
+        queryClient.setQueryData(cartQueryKey, ctx.prevCart);
         dispatch(setCart(ctx.prevCart));
       }
 
-      displayErrorMessages(_err, "Failed to update quantity", toast.error);
+      displayErrorMessages(err, "Failed to update quantity", toast.error);
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["cart", token] });
+      queryClient.invalidateQueries({ queryKey: cartQueryKey });
     },
   });
 
   const removeItemMutation = useMutation({
-    mutationFn: (id) => {
-      console.log("🚀 removeItemMutation running for id:", id);
-      return axios.delete(`/cart/${id}`, {
+    mutationFn: (id) =>
+      API.delete(`/cart/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
-      });
-    },
+      }),
     onMutate: async (id) => {
-      await queryClient.cancelQueries(["cart", token]); // use same key with token
-      const prevCart = queryClient.getQueryData(["cart", token]) || [];
+      await queryClient.cancelQueries({ queryKey: cartQueryKey });
+      const prevCart = queryClient.getQueryData(cartQueryKey) || [];
       const newCart = prevCart.filter((item) => item.id !== id);
 
-      queryClient.setQueryData(["cart", token], newCart);
+      queryClient.setQueryData(cartQueryKey, newCart);
       dispatch(setCart(newCart));
 
       return { prevCart };
     },
     onError: (err, _vars, context) => {
-      console.error("❌ Remove error:", err.response?.data || err.message);
-      queryClient.setQueryData(["cart", token], context.prevCart);
-      dispatch(setCart(context.prevCart));
+      if (context?.prevCart) {
+        queryClient.setQueryData(cartQueryKey, context.prevCart);
+        dispatch(setCart(context.prevCart));
+      }
+
+      displayErrorMessages(err, "Failed to remove item", toast.error);
     },
     onSuccess: () => {
-      console.log("✅ onSuccess fired");
       toast.success("Item removed from cart");
     },
     onSettled: () => {
-      console.log("🔄 onSettled fired");
-      queryClient.invalidateQueries(["cart", token]);
-    }
+      queryClient.invalidateQueries({ queryKey: cartQueryKey });
+    },
   });
-
 
   const addToCartMutation = useMutation({
     mutationFn: async ({ variant, token }) => {
-      console.log(variant)
       const defaultSize = variant.sizeOptions?.[0];
       if (!defaultSize) throw new Error("No size available for this product.");
 
-      return axios.post(
+      return API.post(
         "/cart",
         {
           variant_id: variant.id,
@@ -136,13 +123,12 @@ export default function useCart(token) {
     },
     onSuccess: () => {
       toast.success("Added to cart successfully");
-      queryClient.invalidateQueries(["cart", token]);
+      queryClient.invalidateQueries({ queryKey: cartQueryKey });
     },
     onError: (err) => {
       displayErrorMessages(err, "Failed to add to cart", toast.error);
     },
   });
-
 
   return {
     cart,

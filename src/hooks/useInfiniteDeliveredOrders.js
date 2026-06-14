@@ -1,11 +1,12 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import axios from "@/lib/axios";
+import API from "@/lib/axios";
+import { queryKeys } from "@/lib/queryKeys";
 
 export const useInfiniteDeliveredOrders = (userId) => {
   return useInfiniteQuery({
-    queryKey: ['deliveredOrders', userId],
+    queryKey: queryKeys.deliveredOrders(userId),
     queryFn: async ({ pageParam = 1 }) => {
-      const { data } = await axios.get(
+      const { data } = await API.get(
         `/order/user/delivered-orders/${userId}?page=${pageParam}&limit=10`
       );
       return data; // { orders, page, limit, totalOrders, hasMore }

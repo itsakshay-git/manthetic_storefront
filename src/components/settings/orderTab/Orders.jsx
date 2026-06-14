@@ -1,7 +1,10 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import OrderItem from "./OrderItem";
 
 const Orders = ({ orders, refProp, isFetchingNextPage, hasNextPage }) => {
+  const navigate = useNavigate();
+
   if (!orders.length) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -15,7 +18,7 @@ const Orders = ({ orders, refProp, isFetchingNextPage, hasNextPage }) => {
           You haven't placed any orders yet. Start shopping to see your order history here.
         </p>
         <button
-          onClick={() => window.location.href = '/'}
+          onClick={() => navigate('/')}
           className="mt-4 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
         >
           Start Shopping
@@ -59,7 +62,7 @@ const Orders = ({ orders, refProp, isFetchingNextPage, hasNextPage }) => {
             </div>
             <div>
               <p className="text-sm text-gray-600">Total Amount</p>
-              <p>₹{isNaN(Number(order.total_amount)) ? 0 : order.total_amount}</p>
+              <p>Rs. {isNaN(Number(order.total_amount)) ? 0 : order.total_amount}</p>
             </div>
             <div>
               <p className="text-sm text-gray-600">Items</p>
