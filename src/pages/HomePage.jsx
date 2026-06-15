@@ -3,7 +3,6 @@ import CategoryList from "@/components/home/CategoryList";
 import TopSellingProducts from "@/components/home/TopSellingProducts";
 import DealBanner from "@/components/home/DealBanner";
 import Testimonials from "@/components/home/Testimonials";
-import Footer from "@/components/layout/Footer";
 
 const HomePage = () => {
   return (
@@ -14,7 +13,6 @@ const HomePage = () => {
       <TopSellingProducts />
       <DealBanner />
       <Testimonials />
-      <Footer />
     </main>
   );
 };
