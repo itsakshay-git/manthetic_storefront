@@ -44,7 +44,7 @@ const Navbar = () => {
     navigate("/login");
   };
 
-  // ✅ Close menu on outside click
+  // Close menu on outside click
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -58,26 +58,24 @@ const Navbar = () => {
   }, []);
 
   return (
-    <header className="w-full px-6 md:px-32 py-4 flex items-center justify-between border-b border-gray-200 bg-white relative">
+    <header className="w-full px-4 sm:px-6 md:px-8 lg:px-32 py-4 flex items-center justify-between border-b border-gray-200 bg-white relative">
       {/* Left */}
-      <div className="flex items-center gap-12">
-        <h1 className="text-2xl font-bold">
-          <Link to={"/"}>Manthetic</Link>
-        </h1>
-        <nav className="hidden md:flex gap-8 text-sm font-medium text-gray-700">
+      <div className="flex items-center gap-6 lg:gap-12">
+        <h1 className="text-2xl font-bold leading-none tracking-wide text-green-400" style={{ fontFamily: "'Italiana', sans-serif" }}><Link to={"/"}>Manthetic</Link></h1>
+        <nav className="hidden gap-5 text-sm font-medium text-gray-700 md:flex lg:gap-8">
           <Link to={"/products"} className="hover:text-black">
             Shop
           </Link>
-          <a href="#" className="hover:text-black">
+          <Link to={"/about"} className="hover:text-black">
             About
-          </a>
+          </Link>
         </nav>
       </div>
 
       {/* Right */}
       <div className="flex items-center gap-4 relative">
         {/* Search */}
-        <div className="hidden md:flex items-center bg-gray-200 px-4 py-2 rounded-full w-64">
+        <div className="hidden items-center rounded-full bg-gray-200 px-4 py-2 md:flex md:w-44 lg:w-64">
           <Search className="w-4 h-4 text-gray-600" />
           <input
             type="text"
@@ -133,3 +131,6 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+
+

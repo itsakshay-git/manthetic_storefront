@@ -33,6 +33,23 @@ export const usePlaceOrder = (token) => {
   });
 };
 
+export const useCancelOrder = (userId) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (orderId) => {
+      const { data } = await API.put(`/order/${orderId}/cancel`);
+      return data;
+    },
+    onSuccess: () => {
+      toast.success("Order cancelled successfully");
+      queryClient.invalidateQueries({ queryKey: queryKeys.orders(userId) });
+    },
+    onError: (error) => {
+      displayErrorMessages(error, "Failed to cancel order", toast.error);
+    },
+  });
+};
 
 export const useInfiniteOrders = (userId) => {
   return useInfiniteQuery({

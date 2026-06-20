@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import FallbackSkeleton from "./components/common/FallbackSkeleton";
 import NotFound from "./pages/NotFound";
+import ScrollToTop from "./components/common/ScrollToTop";
 
 // Lazy imports
 const HomePage = lazy(() => import("./pages/HomePage"));
@@ -18,17 +19,25 @@ const Register = lazy(() => import("./pages/Register"));
 const Settings = lazy(() => import("./pages/Settings"));
 const WishList = lazy(() => import("./pages/WishList"));
 const Reviews = lazy(() => import("./pages/Reviews"));
+const About = lazy(() => import("./pages/About"));
+const PolicyPage = lazy(() => import("./pages/PolicyPage"));
 
 function App() {
   return (
     <>
       <Toaster position="top-right" />
+      <ScrollToTop />
       <Navbar />
       <Suspense fallback={<FallbackSkeleton />}>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/" element={<HomePage />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/shipping" element={<PolicyPage />} />
+          <Route path="/returns" element={<PolicyPage />} />
+          <Route path="/terms" element={<PolicyPage />} />
+          <Route path="/privacy" element={<PolicyPage />} />
           <Route path="/products" element={<Products />} />
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/reviews/:id" element={<Reviews />} />

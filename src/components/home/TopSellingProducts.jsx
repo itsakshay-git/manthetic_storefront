@@ -10,7 +10,7 @@ const TopSellingProducts = () => {
 
   if (isLoading) {
     return (
-      <section className="w-full px-4 md:px-32 py-14">
+      <section className="w-full px-4 md:px-8 lg:px-32 py-14">
         <SectionHeader
           onViewAll={() => navigate("/products?is_best_selling=true")}
           disabled
@@ -27,7 +27,7 @@ const TopSellingProducts = () => {
 
   if (isError) {
     return (
-      <section className="w-full px-4 md:px-32 py-14">
+      <section className="w-full px-4 md:px-8 lg:px-32 py-14">
         <div className="rounded-xl border border-red-100 bg-red-50 p-5 text-sm text-red-600">
           Failed to load top selling products. Please refresh the page.
         </div>
@@ -36,7 +36,7 @@ const TopSellingProducts = () => {
   }
 
   return (
-    <section className="w-full px-4 md:px-32 py-14">
+    <section className="w-full px-4 md:px-8 lg:px-32 py-14">
       <SectionHeader onViewAll={() => navigate("/products?is_best_selling=true")} />
 
       {products.length === 0 ? (
@@ -101,3 +101,4 @@ const ProductSkeleton = () => (
 );
 
 export default TopSellingProducts;
+

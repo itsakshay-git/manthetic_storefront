@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import useFilteredProducts from "../hooks/useFilteredProducts";
 import Filter from "../components/Products/Filters";
 import ProductCard from "../components/Products/ProductCard";
+import AiStyleFinder from "../components/Products/AiStyleFinder";
 import { useCategories } from "@/hooks/useCategories";
 import { useSearchParams } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
@@ -94,8 +95,8 @@ export default function Products() {
   const hasProducts = allProducts.length > 0;
 
   return (
-    <div className="px-4 py-6 md:px-32 md:py-10">
-      <header className="rounded-2xl border border-gray-200 bg-gray-50 px-4 py-6 md:px-6">
+    <div className="px-4 py-6 md:px-8 lg:px-32 md:py-10">
+      <header className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-6 md:px-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
@@ -111,7 +112,7 @@ export default function Products() {
 
           <button
             type="button"
-            className="inline-flex w-fit items-center gap-2 rounded-full bg-black px-4 py-2.5 text-sm font-medium text-white md:hidden"
+            className="inline-flex w-fit items-center gap-2 rounded-full bg-black px-4 py-2.5 text-sm font-medium text-white lg:hidden"
             onClick={() => setIsFilterOpen(true)}
           >
             <FilterIcon className="h-4 w-4" />
@@ -135,13 +136,14 @@ export default function Products() {
       </header>
 
       <div className="mt-8 flex gap-6 items-start">
-        <aside className="hidden w-72 shrink-0 md:block">
+        <aside className="hidden w-72 shrink-0 lg:block">
           <div className="sticky top-24">
             <Filter onApply={applyFilters} onReset={resetFilters} />
           </div>
         </aside>
 
         <section className="min-w-0 flex-1">
+          <AiStyleFinder filters={filters} />
           {isLoading && page === 1 ? (
             <ProductGridSkeleton />
           ) : isError ? (
@@ -151,7 +153,7 @@ export default function Products() {
             />
           ) : hasProducts ? (
             <>
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4">
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
                 {allProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
@@ -242,7 +244,7 @@ const ProductGridSkeleton = () => (
       <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
       Loading products from the server
     </div>
-    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
       {Array.from({ length: 8 }).map((_, index) => (
         <div key={index} className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
           <div className="h-44 animate-pulse bg-gradient-to-br from-gray-100 via-gray-200 to-gray-100 sm:h-72" />
@@ -260,7 +262,7 @@ const ProductGridSkeleton = () => (
 );
 
 const StatePanel = ({ title, message, action }) => (
-  <div className="flex min-h-80 flex-col items-center justify-center rounded-2xl border border-gray-200 bg-gray-50 p-8 text-center">
+  <div className="flex min-h-80 flex-col items-center justify-center rounded-lg border border-gray-200 bg-gray-50 p-8 text-center">
     <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-white text-gray-500 ring-1 ring-gray-200">
       <Search className="h-6 w-6" />
     </div>
@@ -269,3 +271,6 @@ const StatePanel = ({ title, message, action }) => (
     {action && <div className="mt-5">{action}</div>}
   </div>
 );
+
+
+

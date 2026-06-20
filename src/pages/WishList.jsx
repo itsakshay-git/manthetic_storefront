@@ -31,7 +31,7 @@ const WishList = () => {
 
   if (!token) {
     return (
-      <div className="px-6 md:px-32 py-8">
+      <div className="px-4 sm:px-6 md:px-8 lg:px-32 py-8">
         <StatusPanel
           type="empty"
           title="Login Required"
@@ -48,7 +48,7 @@ const WishList = () => {
 
   if (isLoading) {
     return (
-      <div className="px-6 md:px-32 py-8">
+      <div className="px-4 sm:px-6 md:px-8 lg:px-32 py-8">
         <StatusPanel
           type="loading"
           title="Loading Wishlist"
@@ -60,7 +60,7 @@ const WishList = () => {
 
   if (isError) {
     return (
-      <div className="px-6 md:px-32 py-8">
+      <div className="px-4 sm:px-6 md:px-8 lg:px-32 py-8">
         <StatusPanel
           type="error"
           title="Failed To Load Wishlist"
@@ -73,7 +73,7 @@ const WishList = () => {
   const products = data?.pages.flatMap((page) => page.products) || [];
 
   return (
-    <div className="px-6 md:px-32 py-8">
+    <div className="px-4 sm:px-6 md:px-8 lg:px-32 py-8">
       <h1 className="text-2xl font-bold mb-6">My Wishlist</h1>
 
       {products.length === 0 ? (
@@ -107,3 +107,4 @@ const WishList = () => {
 };
 
 export default WishList;
+

@@ -12,7 +12,7 @@ const CategoryList = () => {
 
   if (isLoading) {
     return (
-      <section className="w-full px-4 md:px-32 py-10">
+      <section className="w-full px-4 md:px-8 lg:px-32 py-10">
         <CategoryHeader />
         <LoadingNote label="Loading categories from the server" />
         <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
@@ -26,7 +26,7 @@ const CategoryList = () => {
 
   if (isError) {
     return (
-      <section className="w-full px-4 md:px-32 py-10">
+      <section className="w-full px-4 md:px-8 lg:px-32 py-10">
         <div className="rounded-xl border border-red-100 bg-red-50 p-5 text-sm text-red-600">
           Failed to load categories. Please refresh the page.
         </div>
@@ -36,7 +36,7 @@ const CategoryList = () => {
 
   if (!categories.length) {
     return (
-      <section className="w-full px-4 md:px-32 py-10">
+      <section className="w-full px-4 md:px-8 lg:px-32 py-10">
         <CategoryHeader />
         <div className="mt-8 rounded-xl border border-gray-200 bg-gray-50 p-8 text-center text-gray-500">
           No categories available yet.
@@ -46,7 +46,7 @@ const CategoryList = () => {
   }
 
   return (
-    <section className="w-full px-4 md:px-32 py-10">
+    <section className="w-full px-4 md:px-8 lg:px-32 py-10">
       <CategoryHeader />
 
       <div className="mt-8 md:hidden">
@@ -150,3 +150,4 @@ const CategoryCard = ({ category, onClick, className = "", featured = false }) =
 );
 
 export default CategoryList;
+

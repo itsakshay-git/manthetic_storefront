@@ -1,263 +1,107 @@
-# 🛍️ Menthetic Storefront
+﻿# Menthetic Storefront
 
-A modern, responsive e-commerce storefront built with React, featuring a beautiful UI, authentication system, shopping cart, wishlist functionality, and seamless user experience.
+Customer-facing React storefront for Manthetic. The app covers product discovery, product detail browsing, cart and wishlist workflows, checkout, customer account settings, order history, policies, and AI-assisted product recommendations.
 
-## 🌐 Live Demo
+## Current Features
 
-**🔗 Live Application**: [https://menthetic-storefront.vercel.app](https://menthetic-storefront.vercel.app) *(Coming Soon)*
+- Responsive storefront built with React, Vite, Tailwind CSS, and React Router.
+- Home page with tablet-aware spacing, product sections, category browsing, and consistent brand typography.
+- Product listing with filters, search-friendly layout, compact AI Style Finder, and responsive mobile/tablet/desktop spacing.
+- Product detail page with balanced gallery/details columns, expandable description text, size/variant selection, wishlist, and cart actions.
+- Cart page with product links back to product detail pages and polished responsive layout.
+- Checkout flow for address, order summary, and order placement.
+- Account settings with profile, password, orders, delivered orders, and reviews.
+- Customer order cancellation from the Orders tab when the backend marks an order cancellable.
+- Policy pages for shipping, returns, privacy, terms, cancellations, and other footer links.
+- Scroll-to-top behavior on route changes.
+- AI Style Finder that sends a customer prompt to the backend and renders recommended catalog products with AI reasons.
 
+## Tech Stack
 
+- React 19
+- Vite 7
+- Tailwind CSS 4
+- React Router 7
+- TanStack Query 5
+- Redux Toolkit
+- Axios
+- React Hook Form and Zod
+- Framer Motion
+- Lucide React
+- React Hot Toast
 
-## ✨ Features
+## Requirements
 
-### 🎨 **User Interface**
-- **Modern Design**: Clean, responsive design with Tailwind CSS
-- **Mobile-First**: Optimized for all device sizes
-- **Smooth Animations**: Framer Motion animations and transitions
-- **Interactive Elements**: Hover effects, loading states, and micro-interactions
+- Node.js 18 or newer
+- npm
+- Manthetic backend API running locally or deployed
 
-### 🔐 **Authentication & User Management**
-- **User Registration & Login**: Secure authentication system
-- **Protected Routes**: Route protection for authenticated users
-- **Profile Management**: User profile and settings
-- **Password Management**: Change password functionality
+## Environment Variables
 
-### 🛒 **Shopping Experience**
-- **Product Catalog**: Browse products with filtering and search
-- **Product Details**: Detailed product information and variants
-- **Shopping Cart**: Add/remove items with persistent storage
-- **Wishlist**: Save favorite products for later
-- **Order Management**: Track order status and history
+Create `.env` in this project root:
 
-### 📱 **Responsive Design**
-- **Mobile Optimized**: Touch-friendly interface
-- **Tablet Support**: Optimized layouts for medium screens
-- **Desktop Experience**: Full-featured desktop interface
-- **Cross-Platform**: Works seamlessly across all devices
-
-### 🚀 **Performance & UX**
-- **Infinite Scroll**: Efficient product loading
-- **Lazy Loading**: Optimized image loading
-- **Smooth Navigation**: React Router with transitions
-- **Toast Notifications**: User feedback and alerts
-
-## 🛠️ Tech Stack
-
-### **Frontend Framework**
-- **React 19**: Latest React with modern features
-- **Vite**: Fast build tool and development server
-- **TypeScript Support**: Full TypeScript compatibility
-
-### **State Management**
-- **Redux Toolkit**: Efficient state management
-- **React Query**: Server state management and caching
-- **React Hook Form**: Form handling and validation
-
-### **Styling & UI**
-- **Tailwind CSS**: Utility-first CSS framework
-- **Lucide React**: Beautiful icon library
-- **Framer Motion**: Animation library
-
-### **Backend Integration**
-- **Axios**: HTTP client for API calls
-- **RESTful API**: Clean API integration
-- **JWT Authentication**: Secure token-based auth
-
-### **Development Tools**
-- **ESLint**: Code quality and consistency
-- **Prettier**: Code formatting
-- **Hot Reload**: Fast development experience
-
-## 📦 Installation
-
-### **Prerequisites**
-- Node.js (v18 or higher)
-- npm or yarn package manager
-- Git
-
-### **Clone the Repository**
-```bash
-git clone https://github.com/yourusername/menthetic-storefront.git
-cd menthetic-storefront
-```
-
-### **Install Dependencies**
-```bash
-npm install
-# or
-yarn install
-```
-
-### **Environment Setup**
-1. Copy the environment example file:
-```bash
-cp .env.example .env
-```
-
-2. Update the `.env` file with your configuration:
 ```env
 VITE_API_BASE_URL=http://localhost:5000/api
-VITE_APP_NAME=Menthetic Storefront
-VITE_APP_VERSION=1.0.0
 ```
 
-### **Start Development Server**
+For production, point `VITE_API_BASE_URL` at the deployed backend API.
+
+## Scripts
+
 ```bash
 npm run dev
-# or
-yarn dev
-```
-
-The application will be available at `http://localhost:5173`
-
-## 🚀 Available Scripts
-
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Start development server |
-| `npm run build` | Build for production |
-| `npm run preview` | Preview production build |
-| `npm run lint` | Run ESLint for code quality |
-
-## 🏗️ Project Structure
-
-```
-menthetic-storefront/
-├── public/                 # Static assets
-├── src/
-│   ├── assets/            # Images and static files
-│   ├── components/        # Reusable UI components
-│   │   ├── auth/         # Authentication components
-│   │   ├── common/       # Shared components
-│   │   ├── home/         # Homepage components
-│   │   ├── layout/       # Layout components
-│   │   ├── modal/        # Modal components
-│   │   ├── Products/     # Product-related components
-│   │   └── settings/     # User settings components
-│   ├── hooks/            # Custom React hooks
-│   ├── lib/              # Utility libraries
-│   ├── pages/            # Page components
-│   ├── redux/            # Redux store and slices
-│   └── utils/            # Helper functions
-├── .env.example          # Environment variables template
-├── package.json          # Dependencies and scripts
-├── vite.config.js        # Vite configuration
-└── tailwind.config.js    # Tailwind CSS configuration
-```
-
-## 🔧 Configuration
-
-### **Environment Variables**
-Create a `.env` file in the root directory with the following variables:
-
-```env
-# API Configuration
-VITE_API_BASE_URL=http://localhost:5000/api
-
-# App Configuration
-VITE_APP_NAME=Menthetic Storefront
-VITE_APP_VERSION=1.0.0
-
-# Optional: Analytics and Monitoring
-VITE_ANALYTICS_ID=your_analytics_id
-```
-
-### **API Configuration**
-The application uses Axios for API calls. The base URL is configured in `src/lib/axios.js` and can be customized through environment variables.
-
-## 🎯 Key Components
-
-### **ProductCard**
-- Displays product information with variants
-- Wishlist functionality with authentication check
-- Add to cart functionality
-- Responsive design for all screen sizes
-
-### **Authentication System**
-- Protected routes for authenticated users
-- Login/Register forms with validation
-- JWT token management
-- User profile management
-
-### **Shopping Cart**
-- Persistent cart storage
-- Add/remove items
-- Quantity management
-- Checkout process
-
-### **Wishlist**
-- Save favorite products
-- Authentication required
-- Visual feedback and tooltips
-
-## 🔒 Security Features
-
-- **JWT Authentication**: Secure token-based authentication
-- **Protected Routes**: Route protection for sensitive pages
-- **Input Validation**: Form validation with Zod schemas
-- **Secure API Calls**: Authenticated API requests
-
-## 📱 Responsive Design
-
-The application is built with a mobile-first approach and includes:
-
-- **Breakpoints**: Tailwind CSS responsive breakpoints
-- **Touch-Friendly**: Optimized for mobile devices
-- **Adaptive Layouts**: Different layouts for different screen sizes
-- **Performance**: Optimized for mobile performance
-
-## 🚀 Deployment
-
-### **Build for Production**
-```bash
+npm run lint
 npm run build
-```
-
-### **Preview Production Build**
-```bash
 npm run preview
 ```
 
-## 📝 Code Style
+## Project Structure
 
-- **ESLint**: Code quality and consistency
-- **Prettier**: Code formatting
-- **React Hooks**: Follow React hooks best practices
-- **Component Structure**: Consistent component organization
+```text
+src/
+  components/
+    Products/        Product filters, cards, and AI finder UI
+    common/          Shared UI and route helpers
+    home/            Home page sections
+    layout/          Navbar, footer, and layout shell
+    settings/        Account settings tabs
+  hooks/             Query and feature hooks
+  pages/             Route-level screens
+  redux/             Auth and app state
+  utils/             Constants and helpers
+```
 
-## 🐛 Troubleshooting
+## AI Style Finder
 
-### **Common Issues**
+The Products page includes a compact AI panel. It posts the shopper query and optional filters to:
 
-1. **Port Already in Use**
-   ```bash
-   # Kill process on port 5173
-   npx kill-port 5173
-   ```
+```text
+POST /api/ai/storefront/style-finder
+```
 
-2. **Dependencies Issues**
-   ```bash
-   # Clear node_modules and reinstall
-   rm -rf node_modules package-lock.json
-   npm install
-   ```
+The backend limits the AI context to catalog candidates, validates returned product and variant IDs, and the storefront renders matches using the existing product UI. Browsing still works if the AI request fails.
 
-3. **Environment Variables Not Loading**
-   - Ensure `.env` file is in root directory
-   - Restart development server
-   - Check variable names start with `VITE_`
+## Order Cancellation
 
+Customer order rows use backend-provided fields:
 
+- `canCancel`
+- `cancelUntil`
+- `cancelUnavailableReason`
 
-## 🙏 Acknowledgments
+Cancellation is confirmed in a dialog and sent to:
 
-- **React Team**: For the amazing React framework
-- **Tailwind CSS**: For the utility-first CSS framework
-- **Vite**: For the fast build tool
-- **Community**: For all the amazing open-source packages
+```text
+PUT /api/order/:id/cancel
+```
 
+The backend enforces ownership, order status, and the 24-hour cancellation window.
 
+## Verification
 
----
+Before shipping storefront changes, run:
 
-**Built with ❤️ using React, Vite, and Tailwind CSS**
+```bash
+npm run lint
+npm run build
+```

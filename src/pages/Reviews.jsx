@@ -13,7 +13,7 @@ const Reviews = () => {
   const reviews = data?.reviews || [];
 
   return (
-    <div className="px-6 md:px-32 py-12">
+    <div className="px-4 sm:px-6 md:px-8 lg:px-32 py-12">
       <h1 className="text-4xl font-bold mb-8">All Reviews</h1>
 
       {reviews.length === 0 ? (
@@ -45,3 +45,4 @@ const Reviews = () => {
 };
 
 export default Reviews;
+

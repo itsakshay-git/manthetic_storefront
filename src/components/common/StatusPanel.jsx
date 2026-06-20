@@ -8,8 +8,8 @@ const iconMap = {
 };
 
 const toneMap = {
-  error: "bg-red-100 text-red-500",
-  loading: "bg-gray-100 text-green-600",
+  error: "bg-amber-50 text-amber-600",
+  loading: "bg-gray-100 text-gray-950",
   empty: "bg-gray-100 text-gray-400",
 };
 
@@ -21,15 +21,15 @@ const StatusPanel = ({
   className = "",
 }) => {
   const Icon = iconMap[type] || ShoppingBag;
-  const iconClassName = type === "loading" ? "w-10 h-10 animate-spin" : "w-10 h-10";
+  const iconClassName = type === "loading" ? "h-10 w-10 animate-spin" : "h-10 w-10";
 
   return (
-    <div className={`flex flex-col items-center justify-center py-16 text-center ${className}`}>
-      <div className={`w-20 h-20 rounded-full flex items-center justify-center mb-4 ${toneMap[type]}`}>
+    <div className={`flex flex-col items-center justify-center rounded-2xl bg-white px-5 py-14 text-center ${className}`}>
+      <div className={`mb-4 flex h-20 w-20 items-center justify-center rounded-full ${toneMap[type]}`}>
         <Icon className={iconClassName} />
       </div>
-      {title && <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>}
-      {message && <p className="text-gray-500 max-w-md mb-4">{message}</p>}
+      {title && <h3 className="mb-2 text-lg font-semibold text-gray-950">{title}</h3>}
+      {message && <p className="mb-4 max-w-md text-sm leading-relaxed text-gray-500">{message}</p>}
       {action}
     </div>
   );

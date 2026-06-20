@@ -6,14 +6,14 @@ import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
   const navigate = useNavigate();
+
   return (
-    <section className="w-full px-4 py-8 md:px-32 md:py-12">
-      <div className="flex flex-col sm:flex-row md:flex-row gap-6 items-start relative">
-        
+    <section className="w-full px-4 py-8 md:px-8 md:py-10 lg:px-32 lg:py-12">
+      <div className="relative flex flex-col gap-7 lg:flex-row lg:items-start">
         {/* section 1 */}
-        <div className="flex-1 space-y-4 w-full">
+        <div className="w-full flex-1 space-y-4 lg:min-h-[520px]">
           <div>
-            <h1 className="text-3xl md:text-5xl font-bold leading-tight">
+            <h1 className="text-3xl font-bold leading-tight md:text-5xl">
               <span className="text-gray-800">Unleash Your</span>{" "}
               <span
                 className="text-gray-800"
@@ -26,72 +26,91 @@ const HeroSection = () => {
             </h1>
             <button
               onClick={() => navigate(`/products`)}
-              className="bg-green-500 text-white text-sm px-4 py-2 rounded-full mt-5 cursor-pointer hover:bg-black"
+              className="mt-5 cursor-pointer rounded-full bg-green-500 px-4 py-2 text-sm text-white hover:bg-black"
             >
               Shop Now
             </button>
           </div>
 
           {/* Desktop images (absolute) */}
-          <div className="hidden sm:block md:block">
+          <div className="hidden lg:block">
             <img
               src={hero1}
               alt="hero product"
-              className="sm:w-24 sm:h-32 md:w-28 md:h-40 object-cover rounded-lg absolute sm:left-10 sm:bottom-0 md:left-[135px] md:bottom-28 lg:left-[140px] lg:bottom-28 z-10"
+              className="absolute bottom-28 left-[140px] z-10 h-40 w-28 rounded-lg object-cover"
             />
             <img
               src={hero2}
               alt="hero product"
-              className="sm:w-32 sm:h-32 w-44 h-44 md:w-44 md:h-44 lg:w-44 lg:h-44 object-cover rounded-lg absolute sm:left-28 sm:bottom-28 md:left-60 md:bottom-40 lg:left-60 lg:bottom-56"
+              className="absolute bottom-56 left-60 h-44 w-44 rounded-lg object-cover"
             />
             <img
               src={hero3}
               alt="hero model"
-              className="sm:w-20 sm:h-40 w-32 h-48 object-cover rounded-lg absolute sm:left-48 sm:bottom-52 md:left-[380px] md:bottom-10 lg:left-96 lg:bottom-40"
+              className="absolute bottom-40 left-96 h-48 w-32 rounded-lg object-cover"
+            />
+          </div>
+
+          {/* Tablet images (contained) */}
+          <div className="mt-6 hidden grid-cols-[0.82fr_1fr_0.82fr] items-end gap-3 sm:grid lg:hidden">
+            <img
+              src={hero1}
+              alt="hero product"
+              className="h-40 w-full rounded-xl object-cover"
+            />
+            <img
+              src={hero2}
+              alt="hero product"
+              className="h-48 w-full rounded-xl object-cover"
+            />
+            <img
+              src={hero3}
+              alt="hero model"
+              className="h-44 w-full rounded-xl object-cover"
             />
           </div>
 
           {/* Mobile images (stacked) */}
-          <div className="flex justify-center gap-3 sm:hidden mt-6">
+          <div className="mt-6 flex justify-center gap-3 sm:hidden">
             <img
               src={hero1}
               alt="hero product"
-              className="w-24 h-32 object-cover rounded-lg"
+              className="h-32 w-24 rounded-lg object-cover"
             />
             <img
               src={hero2}
               alt="hero product"
-              className="w-28 h-28 object-cover rounded-lg"
+              className="h-28 w-28 rounded-lg object-cover"
             />
             <img
               src={hero3}
               alt="hero model"
-              className="w-24 h-36 object-cover rounded-lg"
+              className="h-36 w-24 rounded-lg object-cover"
             />
           </div>
         </div>
-        
+
         {/* section 2 */}
-        <div className="flex-1 max-w-md mt-8 md:mt-0">
+        <div className="w-full flex-1 md:mx-auto md:max-w-2xl lg:mx-0 lg:max-w-md">
           <div className="overflow-hidden">
             <div className="relative">
               <img
                 src={hero4}
                 alt="featured"
-                className="w-full object-cover rounded-2xl"
+                className="h-[340px] w-full rounded-2xl object-cover sm:h-[420px] md:h-[460px] lg:h-auto"
               />
               <button
                 onClick={() => navigate(`/products?is_best_selling=true`)}
-                className="absolute left-4 bottom-4 text-white border border-white rounded-full p-2 px-4 cursor-pointer"
+                className="absolute bottom-4 left-4 cursor-pointer rounded-full border border-white px-4 py-2 text-white"
               >
                 Best Seller
               </button>
             </div>
             <div className="px-0 py-4">
-              <h3 className="font-semibold text-lg text-gray-800">
+              <h3 className="text-lg font-semibold text-gray-800">
                 Signature Comfort Fit
               </h3>
-              <p className="text-sm text-gray-600 mt-2">
+              <p className="mt-2 text-sm text-gray-600">
                 The ultimate in comfort and style. Pair this with confidence to
                 make heads turn wherever you go.
               </p>

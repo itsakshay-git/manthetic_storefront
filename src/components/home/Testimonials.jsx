@@ -59,7 +59,7 @@ const testimonials = [
 
 const Testimonials = () => {
   return (
-    <section className="w-full px-4 md:px-32 py-14 bg-white">
+    <section className="w-full px-4 md:px-8 lg:px-32 py-14 bg-white">
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
@@ -148,3 +148,4 @@ const Testimonials = () => {
 };
 
 export default Testimonials;
+

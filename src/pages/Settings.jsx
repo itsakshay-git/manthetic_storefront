@@ -14,12 +14,14 @@ import ProfileCard from "@/components/settings/profileCard/ProfileCard";
 import ChangePassword from "@/components/settings/changePassword/ChangePassword";
 import UserReviews from "@/components/settings/reviewTab/UserReviews";
 import StatusPanel from "@/components/common/StatusPanel";
+import { accountPrimaryActionClass, accountTabs } from "@/utils/constants/accountSettings";
+
 
 const Settings = () => {
   const { user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("orders");
-  const [reviewForm, setReviewForm] = useState({}); // { [variantId]: { rating, comment } }
+  const [reviewForm, setReviewForm] = useState({});
 
   const { reset } = useForm();
   const addReview = useAddReview();
@@ -35,9 +37,15 @@ const Settings = () => {
   } = useInfiniteDeliveredOrders(user?.id);
 
   const { ref: deliveredRef, inView: deliveredInView } = useInView();
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError, } = useInfiniteOrders(user?.id);
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+  } = useInfiniteOrders(user?.id);
   const { ref, inView } = useInView();
-
 
   useEffect(() => {
     if (deliveredInView && hasNextDelivered) {
@@ -47,27 +55,21 @@ const Settings = () => {
 
   useEffect(() => {
     if (updatePassword.isSuccess) {
-      reset(); // clear form after success
+      reset();
     }
   }, [updatePassword.isSuccess, reset]);
 
-  // Intersection Observer to detect when to load next page
   useEffect(() => {
     if (inView && hasNextPage) {
       fetchNextPage();
     }
   }, [inView, hasNextPage, fetchNextPage]);
 
-
-
-  const deliveredOrders = deliveredData?.pages.flatMap(p => p.orders) || [];
+  const deliveredOrders = deliveredData?.pages.flatMap((p) => p.orders) || [];
   const orders = data?.pages.flatMap((page) => page.orders) || [];
 
-
-  // Flatten all pages into a single array
-
   const handleChangeReview = (variantId, field, value) => {
-    setReviewForm(prev => ({
+    setReviewForm((prev) => ({
       ...prev,
       [variantId]: {
         ...prev[variantId],
@@ -75,6 +77,7 @@ const Settings = () => {
       },
     }));
   };
+
   const handleSubmitReview = (orderId, item) => {
     const { rating, comment } = reviewForm[item.id] || {};
     if (!rating || !comment) return toast.error("Please fill rating and comment");
@@ -87,160 +90,155 @@ const Settings = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto border border-gray-300 shadow p-6 mt-5 rounded-2xl space-y-6">
-      {/* Profile Card */}
-      <ProfileCard user={user} />
-
-
-      {/* Tabs */}
-      <div className="overflow-x-auto no-scrollbar">
-        <div className="flex justify-center items-center min-w-max gap-6 border-b border-b-gray-300 mb-6 text-sm font-medium px-2">
-          <button
-            onClick={() => setActiveTab("password")}
-            className={`pb-2 whitespace-nowrap ${activeTab === "password"
-                ? "border-b-2 border-black text-black"
-                : "text-gray-500"
-              }`}
-          >
-            Change Password
-          </button>
-          <button
-            onClick={() => setActiveTab("orders")}
-            className={`pb-2 whitespace-nowrap ${activeTab === "orders"
-                ? "border-b-2 border-green-500 text-green-500"
-                : "text-gray-500"
-              }`}
-          >
-            Orders
-          </button>
-          <button
-            onClick={() => setActiveTab("delivered")}
-            className={`pb-2 whitespace-nowrap ${activeTab === "delivered"
-                ? "border-b-2 border-green-500 text-green-500"
-                : "text-gray-500"
-              }`}
-          >
-            Delivered Orders
-          </button>
-          <button
-            onClick={() => setActiveTab("review")}
-            className={`pb-2 whitespace-nowrap ${activeTab === "review"
-                ? "border-b-2 border-green-500 text-green-500"
-                : "text-gray-500"
-              }`}
-          >
-            My Reviews
-          </button>
+    <main className="bg-white px-6 py-6 md:px-8 lg:px-32">
+      <div className="mx-auto flex flex-col gap-6">
+        <div className="flex flex-col gap-2">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
+            Account
+          </p>
+          <h1 className="text-3xl font-bold text-gray-950 md:text-5xl">
+            Profile Settings
+          </h1>
+          <p className="max-w-2xl text-sm leading-relaxed text-gray-600 md:text-base">
+            Manage your profile, follow your orders, and keep your Manthetic account secure.
+          </p>
         </div>
+
+        <ProfileCard user={user} />
+
+        <section className="rounded-2xl border border-gray-200 bg-gray-50/70 p-3 shadow-sm md:p-5">
+          <div className="overflow-x-auto no-scrollbar">
+            <div className="grid min-w-[560px] grid-cols-4 gap-2 rounded-full bg-white p-1 ring-1 ring-gray-200 md:min-w-0">
+              {accountTabs.map(({ id, label, icon: Icon }) => {
+                const isActive = activeTab === id;
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => setActiveTab(id)}
+                    className={`flex min-h-11 items-center justify-center gap-2 rounded-full px-4 text-sm font-medium transition ${
+                      isActive
+                        ? "bg-gray-950 text-white shadow-sm"
+                        : "text-gray-500 hover:bg-gray-100 hover:text-gray-950"
+                    }`}
+                  >
+                    {React.createElement(Icon, { className: "h-4 w-4" })}
+                    <span>{label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="mt-5 md:mt-6">
+            {activeTab === "orders" && (
+              <>
+                {isLoading ? (
+                  <StatusPanel
+                    type="loading"
+                    title="Loading Orders"
+                    message="Fetching your order history."
+                  />
+                ) : isError ? (
+                  <StatusPanel
+                    type="error"
+                    title="Failed To Load Orders"
+                    message="Please refresh the page and try again."
+                    action={(
+                      <button
+                        onClick={() => window.location.reload()}
+                        className={accountPrimaryActionClass}
+                      >
+                        Refresh Page
+                      </button>
+                    )}
+                  />
+                ) : orders.length === 0 ? (
+                  <StatusPanel
+                    type="empty"
+                    title="No Orders Yet"
+                    message="Start shopping to see your order history here."
+                    action={(
+                      <button
+                        onClick={() => navigate("/products")}
+                        className={accountPrimaryActionClass}
+                      >
+                        Start Shopping
+                      </button>
+                    )}
+                  />
+                ) : (
+                  <Orders
+                    orders={orders}
+                    refProp={ref}
+                    isFetchingNextPage={isFetchingNextPage}
+                    hasNextPage={hasNextPage}
+                  />
+                )}
+              </>
+            )}
+
+            {activeTab === "delivered" && (
+              <>
+                {isLoadingDelivered ? (
+                  <StatusPanel
+                    type="loading"
+                    title="Loading Delivered Orders"
+                    message="Fetching your delivered order history."
+                  />
+                ) : isErrorDelivered ? (
+                  <StatusPanel
+                    type="error"
+                    title="Failed To Load Delivered Orders"
+                    message="Please refresh the page and try again."
+                    action={(
+                      <button
+                        onClick={() => window.location.reload()}
+                        className={accountPrimaryActionClass}
+                      >
+                        Refresh Page
+                      </button>
+                    )}
+                  />
+                ) : deliveredOrders.length === 0 ? (
+                  <StatusPanel
+                    type="empty"
+                    title="No Delivered Orders Yet"
+                    message="Once your orders are delivered, you will be able to review them here."
+                    action={(
+                      <button
+                        onClick={() => navigate("/products")}
+                        className={accountPrimaryActionClass}
+                      >
+                        Browse Products
+                      </button>
+                    )}
+                  />
+                ) : (
+                  <DeliveredOrders
+                    deliveredOrders={deliveredOrders}
+                    reviewForm={reviewForm}
+                    handleChangeReview={handleChangeReview}
+                    handleSubmitReview={handleSubmitReview}
+                    addReview={addReview}
+                    deliveredRef={deliveredRef}
+                    isLoadingDelivered={isLoadingDelivered}
+                    isErrorDelivered={isErrorDelivered}
+                    isFetchingNextDelivered={isFetchingNextDelivered}
+                    hasNextDelivered={hasNextDelivered}
+                  />
+                )}
+              </>
+            )}
+
+            {activeTab === "password" && <ChangePassword updatePassword={updatePassword} />}
+            {activeTab === "review" && <UserReviews />}
+          </div>
+        </section>
       </div>
-
-      {/* Orders Tab */}
-      {activeTab === "orders" && (
-        <>
-          {isLoading ? (
-            <StatusPanel
-              type="loading"
-              title="Loading Orders"
-              message="Fetching your order history."
-            />
-          ) : isError ? (
-            <StatusPanel
-              type="error"
-              title="Failed To Load Orders"
-              message="Please refresh the page and try again."
-              action={(
-                <button
-                  onClick={() => window.location.reload()}
-                  className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-                >
-                  Refresh Page
-                </button>
-              )}
-            />
-          ) : orders.length === 0 ? (
-            <StatusPanel
-              type="empty"
-              title="No Orders Yet"
-              message="Start shopping to see your order history here."
-              action={(
-                <button
-                  onClick={() => navigate('/products')}
-                  className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-                >
-                  Start Shopping
-                </button>
-              )}
-            />
-          ) : (
-            <Orders
-              orders={orders}
-              refProp={ref}
-              isFetchingNextPage={isFetchingNextPage}
-              hasNextPage={hasNextPage}
-            />
-          )}
-        </>
-      )}
-
-      {activeTab === "delivered" && (
-        <>
-          {isLoadingDelivered ? (
-            <StatusPanel
-              type="loading"
-              title="Loading Delivered Orders"
-              message="Fetching your delivered order history."
-            />
-          ) : isErrorDelivered ? (
-            <StatusPanel
-              type="error"
-              title="Failed To Load Delivered Orders"
-              message="Please refresh the page and try again."
-              action={(
-                <button
-                  onClick={() => window.location.reload()}
-                  className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-                >
-                  Refresh Page
-                </button>
-              )}
-            />
-          ) : deliveredOrders.length === 0 ? (
-            <StatusPanel
-              type="empty"
-              title="No Delivered Orders Yet"
-              message="Once your orders are delivered, you will be able to review them here."
-              action={(
-                <button
-                  onClick={() => navigate('/products')}
-                  className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-                >
-                  Browse Products
-                </button>
-              )}
-            />
-          ) : (
-            <DeliveredOrders
-              deliveredOrders={deliveredOrders}
-              reviewForm={reviewForm}
-              handleChangeReview={handleChangeReview}
-              handleSubmitReview={handleSubmitReview}
-              addReview={addReview}
-              deliveredRef={deliveredRef}
-              isLoadingDelivered={isLoadingDelivered}
-              isErrorDelivered={isErrorDelivered}
-              isFetchingNextDelivered={isFetchingNextDelivered}
-              hasNextDelivered={hasNextDelivered}
-            />
-          )}
-        </>
-      )}
-
-
-      {/* Password Tab */}
-      {activeTab === "password" && <ChangePassword updatePassword={updatePassword} />}
-      {activeTab === "review" && <UserReviews />}
-    </div>
+    </main>
   );
 };
 
 export default Settings;
+

@@ -46,7 +46,7 @@ export default function Filter({ onApply, onReset, className = "" }) {
   };
 
   return (
-    <div className={`w-full rounded-2xl border border-gray-200 bg-white p-4 shadow-sm ${className}`}>
+    <div className={`w-full rounded-lg border border-gray-200 bg-white p-4 shadow-sm ${className}`}>
       <div className="mb-5 flex items-center justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-gray-400">
@@ -170,3 +170,4 @@ const Field = ({ label, children }) => (
     {children}
   </div>
 );
+

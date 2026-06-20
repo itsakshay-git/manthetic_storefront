@@ -8,7 +8,7 @@ const DealBanner = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="w-full px-4 md:px-32 py-12">
+    <section className="w-full px-4 md:px-8 lg:px-32 py-12">
       <div className="overflow-hidden rounded-2xl border border-gray-200 bg-gray-950 text-white">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 md:p-10">
           <div className="flex flex-col justify-center text-center md:text-left">
@@ -50,3 +50,4 @@ const DealBanner = () => {
 };
 
 export default DealBanner;
+

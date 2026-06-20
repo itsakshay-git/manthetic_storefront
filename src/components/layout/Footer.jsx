@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="mt-12 border-t border-green-500/30 bg-gray-950 px-4 py-10 text-white md:px-32">
+    <footer className="mt-12 border-t border-green-500/30 bg-gray-950 px-4 py-10 text-white md:px-8 lg:px-32">
       <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
         <div className="md:col-span-2">
           <h3
@@ -30,9 +30,10 @@ const Footer = () => {
           <h4 className="text-sm font-semibold uppercase tracking-[0.16em] text-green-400">Shop</h4>
           <ul className="mt-4 space-y-2 text-sm text-white/75">
             <li><Link to="/" className="hover:text-green-400">Home</Link></li>
+            <li><Link to="/about" className="hover:text-green-400">About</Link></li>
             <li><Link to="/products" className="hover:text-green-400">Products</Link></li>
             <li><Link to="/wishlist" className="hover:text-green-400">Wishlist</Link></li>
-            <li><Link to="/settings" className="hover:text-green-400">Profile</Link></li>
+            <li><Link to="/setting" className="hover:text-green-400">Profile</Link></li>
           </ul>
         </div>
 
@@ -40,6 +41,7 @@ const Footer = () => {
           <h4 className="text-sm font-semibold uppercase tracking-[0.16em] text-green-400">Support</h4>
           <ul className="mt-4 space-y-2 text-sm text-white/75">
             <li><a href="mailto:support@manthetic.com" className="hover:text-green-400">Contact Us</a></li>
+            <li><Link to="/shipping" className="hover:text-green-400">Shipping</Link></li>
             <li><Link to="/returns" className="hover:text-green-400">Returns</Link></li>
             <li><Link to="/terms" className="hover:text-green-400">Terms of Use</Link></li>
             <li><Link to="/privacy" className="hover:text-green-400">Privacy Policy</Link></li>
@@ -56,3 +58,4 @@ const Footer = () => {
 };
 
 export default Footer;
+
